@@ -17,7 +17,7 @@ const HeaderBar = ({title,icon1,icon2}:Props) => {
         {/* <Appbar.BackAction onPress={() => {}} /> */}
         
        <View  className="flex-row items-center justify-between w-full p-2">
-       <Text style={{fontFamily:'Poppins-SemiBold'}} className="text-white text-[20px]  ">{title}</Text>
+       <Text style={{fontFamily:'Poppins-SemiBold'}} className="text-white text-[18px]  ">{title}</Text>
         <View className=" flex-row items-center justify-center">
         <Appbar.Action icon={icon1} onPress={() => {}} size={22} />
         <Appbar.Action icon={icon2} onPress={() => {}} size={22} />

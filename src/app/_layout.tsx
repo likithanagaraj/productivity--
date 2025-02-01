@@ -9,7 +9,12 @@ export default function RootLayot() {
     <PaperProvider>
       <Stack >
       <Stack.Screen name="(tabs)" options={{headerShown:false}}  />
-      <Stack.Screen name="(screens)" options={{ headerShown: false }} />
+      <Stack.Screen name="(screens)/newhabit" options={{ headerShown: false }} />
+      <Stack.Screen name="(screens)/newtask" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(screens)/newcategory"
+        options={{ headerShown: false }}
+      />
     </Stack>
     </PaperProvider>
   );
