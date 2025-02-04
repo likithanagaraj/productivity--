@@ -6,11 +6,11 @@ import "../../../global.css";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Appbar } from "react-native-paper";
 import HeaderBar from "../../componets/header";
-import colors from "../(screens)/newhabit";
+import colors from "../../../utils/colors";
 const habits = () => {
   return (
     <SafeAreaView>
-      <View className="h-full w-full bg-zinc-900 ">
+      <View style={{backgroundColor:colors.PRIMARY_BG}} className="h-full w-full  ">
         <HeaderBar title="Habits" icon1="magnify" icon2="calendar" />
         <BasicCalendar />
         <Link

@@ -6,6 +6,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { saveTask } from "../../../utils/storage";
+import colors from "../../../utils/colors";
 
 const TASKS_STORAGE_KEY = "tasks";
 const NewTask = () => {
@@ -81,7 +82,7 @@ const NewTask = () => {
   };
   
   return (
-    <SafeAreaView className="h-full w-full bg-zinc-900 p-5">
+    <SafeAreaView style={{backgroundColor:colors.PRIMARY_BG}} className="h-full w-full  p-5">
       <ScrollView>
         <Text
           style={{ fontFamily: "Poppins-SemiBold" }}

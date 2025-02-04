@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import HeaderBar from '../../componets/header'
+import colors from '../../../utils/colors'
 
 const Home = () => {
   return (
-    <View className="h-full w-full bg-zinc-900 ">
+    <View style={{backgroundColor:colors.PRIMARY_BG}} className="h-full w-full  ">
     <HeaderBar title="Home" icon1="magnify" icon2="calendar" />
   
     
