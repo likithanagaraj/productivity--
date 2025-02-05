@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#c",
   },
   title: {
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: "Geist-SemiBold",
     color: "#D62059",
     fontSize: 21,
     marginBottom: 20,

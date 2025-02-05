@@ -2,23 +2,23 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { Tabs } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useFonts } from '@expo-google-fonts/poppins';
+import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { PaperProvider } from "react-native-paper";
+import colors from "../../../utils/colors";
 SplashScreen.preventAutoHideAsync();
 const TabLAyout = () => {
+
   let [fontloaded] = useFonts(
     {
-      'Poppins-Regular': require('../../../assets/fonts/Poppins-Regular.ttf'),
-      'Poppins-Bold': require('../../../assets/fonts/Poppins-Bold.ttf'),
-      'Poppins-SemiBold': require('../../../assets/fonts/Poppins-SemiBold.ttf'),
-      'Poppins-Light': require('../../../assets/fonts/Poppins-Light.ttf'),
-      'Poppins-ExtraLight': require('../../../assets/fonts/Poppins-ExtraLight.ttf'),
-      'Poppins-Black': require('../../../assets/fonts/Poppins-Black.ttf'),
-      'Poppins-Thin': require('../../../assets/fonts/Poppins-Thin.ttf'),
-      'Poppins-ExtraBold': require('../../../assets/fonts/Poppins-ExtraBold.ttf'),
-      'Poppins-Medium': require('../../../assets/fonts/Poppins-Medium.ttf'),
+      'Geist-Bold': require('../../../assets/fonts/Geist-Bold.ttf'),
+      'Geist-ExtraBold': require('../../../assets/fonts/Geist-ExtraBold.ttf'),
+      'Geist-Light': require('../../../assets/fonts/Geist-Light.ttf'),
+      'Geist-Medium': require('../../../assets/fonts/Geist-Medium.ttf'),
+      'Geist-Regular': require('../../../assets/fonts/Geist-Regular.ttf'),
+      'Geist-SemiBold': require('../../../assets/fonts/Geist-SemiBold.ttf'),
+      'Geist-Thin': require('../../../assets/fonts/Geist-Thin.ttf'),
       
     }
   )
@@ -31,16 +31,16 @@ const TabLAyout = () => {
      
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: "#D62059",
+          tabBarActiveTintColor: colors.PRIMARY_TEXT,
           headerShown: false,
           tabBarInactiveTintColor: "#999999",
           tabBarStyle: {
             backgroundColor: "#18181B",
-            borderColor: "#18181B",
+            borderColor: colors.LIGHT_BG,
             boxShadow: "0.5px 0.5px 0.5px 0.5px white",
           },
-          headerStyle: { backgroundColor: "#18181B" },
-          headerTintColor: "#fff",
+          // headerStyle: { backgroundColor: colors.PRIMARY_BG },
+          // headerTintColor: "#fff",
         }}
       >
         <Tabs.Screen
@@ -49,7 +49,7 @@ const TabLAyout = () => {
             title: "Tasks",
             tabBarIcon: ({ color }) => (
               // <FontAwesome size={24} name="home" color={color} />
-              <Ionicons name="file-tray-outline" size={22} color={color} />
+              <Ionicons name="file-tray" size={22} color={color} />
             ),
           }}
         />
@@ -59,7 +59,7 @@ const TabLAyout = () => {
             title: "Habits",
             tabBarIcon: ({ color }) => (
               // <FontAwesome size={22} name="trophy" color={color} />
-              <Ionicons name="trophy-outline" size={22} color={color} />
+              <Ionicons name="trophy" size={22} color={color} />
             ),
           }}
         />
@@ -69,7 +69,7 @@ const TabLAyout = () => {
             title: "Home",
             tabBarIcon: ({ color }) => (
               // <FontAwesome size={22} name="home" color={color} />
-              <Ionicons name="home-outline" size={22} color={color} />
+              <Ionicons name="home" size={22} color={color} />
             ),
           }}
         />
@@ -79,7 +79,7 @@ const TabLAyout = () => {
             title: "Pomodoro",
             tabBarIcon: ({ color }) => (
               // <FontAwesome size={21} name="hourglass-2" color={color} />
-              <Ionicons name="hourglass-outline" size={22} color={color} />
+              <Ionicons name="hourglass" size={22} color={color} />
             ),
           }}
         />
@@ -88,7 +88,7 @@ const TabLAyout = () => {
           options={{
             title: "Achievements",
             tabBarIcon: ({ color }) => (
-              <Ionicons name="trophy-outline" size={22} color={color} />
+              <Ionicons name="trophy" size={22} color={color} />
               // <FontAwesome size={24} name="trophy" color={color} />
             ),
           }}

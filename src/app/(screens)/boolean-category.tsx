@@ -81,7 +81,7 @@ const Booleancategory = () => {
             mode="contained"
             onPress={handleSubmitHabit}
             style={styles.submitButton}
-            labelStyle={{ color: "white", fontFamily: "Poppins-SemiBold" }}
+            labelStyle={{ color: "white", fontFamily: "Geist-SemiBold" }}
           >
             Create Habit
           </Button>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#c",
   },
   title: {
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: "Geist-SemiBold",
     color: "#D62059",
     fontSize: 21,
     marginBottom: 20,

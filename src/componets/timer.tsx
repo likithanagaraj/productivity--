@@ -32,7 +32,7 @@ const TimerScreen = () => {
       <View className="flex-col  items-center justify-center h-full gap-5 ">
         <View className="h-[200px] w-[200px] rounded-full bg-transparent flex justify-center items-center border-[5px] border-white ">
           <Text
-            style={{ fontFamily: "'Poppins-SemiBold" }}
+            style={{ fontFamily: "Geist-SemiBold" }}
             className="text-white text-[40px] "
           >
             {count}
@@ -44,7 +44,7 @@ const TimerScreen = () => {
             mode="contained-tonal"
             buttonColor="#D62059"
             textColor="#fff"
-            labelStyle={{ fontFamily: "Poppins-SemiBold", fontSize: 15 }}
+            labelStyle={{ fontFamily: "Geist-SemiBold", fontSize: 15 }}
             style={{ borderRadius: 18,  }}
             onPress={startcount}
           >
@@ -54,7 +54,7 @@ const TimerScreen = () => {
             mode="contained-tonal"
             buttonColor="#D62059"
             textColor="#fff"
-            labelStyle={{ fontFamily: "Poppins-SemiBold", fontSize: 15 }}
+            labelStyle={{ fontFamily: "Geist-SemiBold", fontSize: 15 }}
             style={{ borderRadius: 18,  }}
             onPress={restart}
           >

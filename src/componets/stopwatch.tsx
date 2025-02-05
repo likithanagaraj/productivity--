@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
-    fontFamily:'Poppins-SemiBold',
+    fontFamily:'Geist-SemiBold',
   },
   timerContainer: {
     alignItems: 'center',
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     fontSize: 48,
     fontWeight: 'bold',
     color: '#fff',
-    fontFamily:'Poppins-SemiBold',
+    fontFamily:'Geist-SemiBold',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily:'Poppins-SemiBold',
+    fontFamily:'Geist-SemiBold',
   },
 });
 

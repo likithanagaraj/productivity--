@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions } from "react-native"
 import React, { useState, useEffect, useRef } from "react"
+import colors from "../../utils/colors"
 
 const HorizontalCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())
@@ -29,7 +30,7 @@ const HorizontalCalendar = () => {
     if (dates.length > 0) {
       scrollToCurrentDate()
     }
-  }, [dates])
+  }, [dates, selectedDate])
 
   const scrollToCurrentDate = () => {
     if (scrollViewRef.current) {
@@ -84,7 +85,7 @@ const HorizontalCalendar = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#18181B",
+    backgroundColor: colors.PRIMARY_BG,
     // height: 80,
    
   },
@@ -93,17 +94,17 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     width: 45,
-    height: 50,
+    height: 60,
     // paddingHorizontal: 1,
     // paddingVertical: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 100,
+    borderRadius: 80,
    
   },
   selectedDate: {
-    backgroundColor: "#D62059",
-    borderRadius: 20,
+    backgroundColor: colors.PRIMARY_TEXT,
+    borderRadius: 15,
     
   },
   today: {
@@ -113,20 +114,19 @@ const styles = StyleSheet.create({
   },
   dayName: {
     fontSize: 12,
-    color: "#999999",
-    // marginBottom: 1,
-    fontFamily:'Poppins-Light',
-
+    color: colors.PRIMARY_TEXT,
+    marginBottom: 10,
+    fontFamily:'Geist',
+    opacity: 0.5,
   },
   dayNumber: {
-    fontSize: 15,
-    color: "#999999",
-    fontFamily:'Poppins-SemiBold',
-    
+    fontSize: 16,
+    color: colors.PRIMARY_TEXT,
+    fontFamily:'Geist-SemiBold',
     
   },
   selectedText: {
-    color: "#fff",
+    color: colors.PRIMARY_BG,
     
   },
  

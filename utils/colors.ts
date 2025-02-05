@@ -1,5 +1,6 @@
 export default {
-  PRIMARY_BG : '#18181B',
+  PRIMARY_BG : '#1b1b1b',
   PRIMARY_TEXT : '#FFFFFF',
-  CTA:'#D62059',
+  CTA:'#B5CFF8',
+  LIGHT_BG : '#313131',
 }

@@ -100,7 +100,7 @@ const Task = () => {
     >
       <View className="p-5 h-full ">
         <Text
-          style={{ fontFamily: "Poppins-SemiBold", marginBottom: 20 }}
+          style={{ fontFamily: "Geist-SemiBold", marginBottom: 20 }}
           className="text-white text-3xl  "
         >
           Task
@@ -213,7 +213,7 @@ const Task = () => {
         </Link>
         {/* <Link href={"/(screens)/newtask"}>
           <Button
-            labelStyle={{ fontFamily: "Poppins-SemiBold" }}
+            labelStyle={{ fontFamily: "Geist-SemiBold" }}
             style={{ width: 200 }}
             mode="contained-tonal"
             textColor="white"

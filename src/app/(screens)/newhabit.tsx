@@ -1,47 +1,180 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { Button } from "react-native-paper";
-import { router } from "expo-router";
+import { Alert, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Button, SegmentedButtons, TextInput } from "react-native-paper";
+import { router, useLocalSearchParams } from "expo-router";
+import colors from "../../../utils/colors";
+import { saveHabits } from "../../../utils/storage";
 
-const newhabit = () => {
+import 'react-native-get-random-values';
+
+const Newhabit = () => {
+  const {id} = useLocalSearchParams()
+  
+  const generateId = () => {
+    return crypto.randomUUID(); // Generates a universally unique identifier (UUID)
+  };
+  
+  const [value, setValue] = React.useState("");
+  const [habitName, sethabitName] = useState("");
+  const [description, setdescription] = useState("");
+  const [errors, seterrors] = useState("");
+  const handleSubmitHabit = async() => {
+    if (habitName.trim() === "") {
+      seterrors("Please enter a habit name");
+      return;
+    }
+    try {
+      const newhabit = {
+        id: generateId(),
+        habittitle: habitName.trim(),
+        description: description,
+        priority: value,
+      };
+      await saveHabits(newhabit);
+      router.push("/");
+    } catch (error) {
+       Alert.alert('Error', 'Failed to save task');
+    }
+  };
+
   return (
-    <View className="bg-[#18181B] h-full w-full p-7">
-      <Text style={{fontFamily:"Poppins-SemiBold"}} className="text-white text-[18px] mb-7 text-center">
-      How do you want to track your habits ?
-      </Text>
-      <View className="flex flex-col gap-7">
-        <View className="flex flex-col gap-1">
-          <Button onPress={()=> router.push("/boolean-category")} style={{borderRadius:7}} mode="contained-tonal" buttonColor="#D62059" labelStyle={{fontFamily:"Poppins-SemiBold"}}>WITH A YES OR NO</Button>
-          <Text style={{fontFamily:"Poppins-Regular",textAlign:"center"}} className="text-[#666666] text-[12px]">
-            If you just want to record whether you succeed with the activity or
-            not.
+    <SafeAreaView>
+      <View
+        style={{ backgroundColor: colors.PRIMARY_BG }}
+        className=" h-full w-full px-6 py-8 flex flex-col justify-between"
+      >
+        <View className="flex flex-col gap-8">
+          <Text
+            style={{ fontFamily: "Geist-SemiBold", color: colors.PRIMARY_TEXT }}
+            className=" text-[22px]  "
+          >
+            Create Habit
           </Text>
+
+          <View className="flex flex-col gap-5">
+            <View>
+              <TextInput
+                mode="outlined"
+                style={{
+                  backgroundColor: colors.LIGHT_BG,
+                  fontFamily: "Geist-Regular",
+                  color: colors.PRIMARY_TEXT,
+                }}
+                cursorColor="#666666"
+                outlineColor={colors.PRIMARY_BG}
+                activeOutlineColor={colors.CTA}
+                label={id ? "Edit Habit🤣" : "Enter task name"}
+                value={habitName}
+                onChangeText={(text) => sethabitName(text)}
+              />
+              {errors && <Text className="text-red-500">{errors}</Text>}
+            </View>
+            <TextInput
+              mode="outlined"
+              style={{
+                backgroundColor: colors.LIGHT_BG,
+                fontFamily: "Geist-Regular",
+                color: colors.PRIMARY_TEXT,
+                paddingBottom: 35,
+              }}
+              cursorColor="#666666"
+              outlineColor={colors.PRIMARY_BG}
+              activeOutlineColor={colors.CTA}
+              label="Enter task Description"
+              value={description}
+              onChangeText={(text) => setdescription(text)}
+            />
+
+            <SafeAreaView >
+              <SegmentedButtons
+                value={value}
+                onValueChange={setValue}
+                buttons={[
+                  {
+                    value: "Low",
+                    label: "Low",
+                    testID: "1",
+                    style: {
+                      borderRadius: 5,
+                      borderColor: colors.PRIMARY_BG,
+                      backgroundColor:
+                        value === "Low" ? colors.CTA : colors.LIGHT_BG,
+                    },
+                    labelStyle: {
+                      color:
+                        value === "Low"
+                          ? colors.PRIMARY_BG
+                          : colors.PRIMARY_TEXT,
+                      fontFamily:
+                        value === "Low" ? "Geist-SemiBold" : "Geist-Regular",
+                    },
+                  },
+                  {
+                    value: "Medium",
+                    label: "Medium",
+                    testID: "2",
+                    style: {
+                      backgroundColor:
+                        value === "Medium" ? colors.CTA : colors.LIGHT_BG,
+                      borderColor: colors.PRIMARY_BG,
+                    },
+                    labelStyle: {
+                      color:
+                        value === "Medium"
+                          ? colors.PRIMARY_BG
+                          : colors.PRIMARY_TEXT,
+                      fontFamily:
+                        value === "Medium" ? "Geist-SemiBold" : "Geist-Regular",
+                    },
+                  },
+                  {
+                    value: "High",
+                    label: "High",
+                    testID: "3",
+                    style: {
+                      borderRadius: 5,
+                      borderColor: colors.PRIMARY_BG,
+                      backgroundColor:
+                        value === "High" ? colors.CTA : colors.LIGHT_BG,
+                    },
+                    labelStyle: {
+                      color:
+                        value === "High"
+                          ? colors.PRIMARY_BG
+                          : colors.PRIMARY_TEXT,
+                      fontFamily:
+                        value === "High" ? "Geist-SemiBold" : "Geist-Regular",
+                    },
+                  },
+                ]}
+              />
+            </SafeAreaView>
+          </View>
         </View>
-        <View className="flex flex-col gap-1">
-          <Button onPress={()=> router.push("/numeric-category")} style={{borderRadius:7}} buttonColor="#D62059" labelStyle={{fontFamily:"Poppins-SemiBold"}} mode="contained-tonal">With a NUMERIC value</Button >
-          <Text style={{fontFamily:"Poppins-Regular",textAlign:"center"}} className="text-[#666666] text-[12px]">
-            If you just want to establish a daily goal or a limit for the habit
-          </Text>
-        </View>
-        <View className="flex flex-col gap-1">
-          <Button onPress={()=> router.push("/checklist-category")} style={{borderRadius:7}} buttonColor="#D62059" labelStyle={{fontFamily:"Poppins-SemiBold"}} mode="contained-tonal">With a CHECKLIST</Button>
-          <Text style={{fontFamily:"Poppins-Regular",textAlign:"center"}} className="text-[#666666] text-[12px]">
-            If you just want to evaluate your activity based on a set of sub
-            items
-          </Text>
-        </View>
-        <View className="flex flex-col gap-1">
-          <Button style={{borderRadius:7}} buttonColor="#D62059" labelStyle={{fontFamily:"Poppins-SemiBold"}} mode="contained-tonal">With a TIMER</Button>
-          <Text style={{fontFamily:"Poppins-Regular",textAlign:"center"}} className="text-[#666666] text-[12px]">
-            If you just want to evaluate your activity based on how much time
-            you spent doing it.
-          </Text>
-        </View>
+
+        <Button
+          mode="contained"
+          onPress={handleSubmitHabit}
+          style={styles.submitButton}
+          labelStyle={{
+            color: colors.PRIMARY_BG,
+            fontFamily: "Geist-Bold",
+          }}
+        >
+          Create Habit
+        </Button>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default newhabit;
+export default Newhabit;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  submitButton: {
+    // marginTop: 20,
+    backgroundColor: colors.CTA,
+
+    borderRadius: 7,
+  },
+});

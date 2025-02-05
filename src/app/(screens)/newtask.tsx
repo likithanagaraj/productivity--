@@ -85,7 +85,7 @@ const NewTask = () => {
     <SafeAreaView style={{backgroundColor:colors.PRIMARY_BG}} className="h-full w-full  p-5">
       <ScrollView>
         <Text
-          style={{ fontFamily: "Poppins-SemiBold" }}
+          style={{ fontFamily: "Geist-SemiBold" }}
           className="text-white py-5 text-[22px]"
         >
           Create a New Task
@@ -104,10 +104,10 @@ const NewTask = () => {
           {errors.task && <Text className="text-red-500">{errors.task}</Text>}
           <View>
             <Text
-              style={{ fontFamily: "Poppins-Regular" }}
+              style={{ fontFamily: "Geist-Regular" }}
               className="text-white text-[16px]"
             >
-              CheckList
+              Sub Task
             </Text>
 
             {subtask.map((subtaskText, index) => (
@@ -134,7 +134,7 @@ const NewTask = () => {
           </View>
 
           <Text
-            style={{ fontFamily: "Poppins-Regular" }}
+            style={{ fontFamily: "Geist-Regular" }}
             className="text-[#666666] text-[16px] text-center "
             onPress={addSubtask}
           >
