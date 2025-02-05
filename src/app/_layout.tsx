@@ -34,6 +34,14 @@ export default function RootLayot() {
           name="(screens)/habit-schedule"
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="(screens)/task-category"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="(screens)/new-achievements"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </PaperProvider>
     </GestureHandlerRootView>

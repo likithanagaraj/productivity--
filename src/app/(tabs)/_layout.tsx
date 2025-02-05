@@ -7,6 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { PaperProvider } from "react-native-paper";
 import colors from "../../../utils/colors";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 SplashScreen.preventAutoHideAsync();
 const TabLAyout = () => {
 
@@ -28,7 +29,7 @@ const TabLAyout = () => {
 
   return (
     <PaperProvider>
-     
+
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: colors.PRIMARY_TEXT,
@@ -95,6 +96,7 @@ const TabLAyout = () => {
         />
        
       </Tabs>
+     
     </PaperProvider>
   );
 };

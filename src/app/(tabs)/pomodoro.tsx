@@ -8,6 +8,7 @@ import {
   TextInput 
 } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
+import colors from "../../../utils/colors";
 
 const Pomodoro = () => {
   const [duration, setDuration] = useState(30 * 60); // Default 30 minutes
@@ -100,7 +101,7 @@ const Pomodoro = () => {
   };
 
   return (
-    <View className="bg-[#18181B] h-full w-full p-7">
+    <View style={{backgroundColor:colors.PRIMARY_BG}} className=" h-full w-full p-7">
       <Text style={{fontFamily:"Geist-SemiBold"}} className="text-[25px] text-white text-center">
         {isBreak ? "Break Time" : "Pomodoro"}
       </Text>
@@ -124,13 +125,13 @@ const Pomodoro = () => {
             {isBreak ? "taking a break from" : "working on"}
           </Text>
           <Text
-            style={{ fontFamily: "Geist-SemiBold" }}
-            className="text-[18px] text-[#D62059]"
+            style={{ fontFamily: "Geist-SemiBold",color:colors.CTA }}
+            className="text-[18px] "
           >
             UnicornSpace UI
           </Text>
         </View>
-        <View className={`w-[250px] h-[250px] border-8 flex items-center justify-center rounded-full ${isBreak ? 'border-green-500' : 'border-white'}`}>
+        <View className={`w-[250px] h-[250px] border-8 flex items-center justify-center rounded-full ${isBreak ? 'border-[#fff]' : 'border-white'}`}>
           <Text style={{fontFamily:"Geist-SemiBold"}} className="text-[55px] text-[#fff]">
             {formatTime(timer)}
           </Text>
@@ -172,7 +173,7 @@ const Pomodoro = () => {
         animationType="slide"
       >
         <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-[#000000] p-5 rounded-lg w-[300px]">
+          <View style={{backgroundColor:colors.PRIMARY_BG}} className=" p-5 rounded-lg w-[300px]">
             <Text style={{fontFamily:"Geist-SemiBold"}} className="text-center text-lg mb-4 text-white">Set Timer Duration</Text>
             <View className="flex-row justify-between mb-4">
               <View className="flex flex-col gap-2">
@@ -181,14 +182,14 @@ const Pomodoro = () => {
                   value={editMinutes}
                   onChangeText={setEditMinutes}
                   keyboardType="numeric"
-                  style={{fontFamily:"Geist-Regular"}} 
+                  style={{fontFamily:"Geist-Regular",backgroundColor:colors.LIGHT_BG}} 
                   className="border-white border p-2 w-[100px] text-white rounded-md"
                 />
               </View>
               <View className="flex flex-col gap-2">
                 <Text style={{fontFamily:"Geist-Regular"}} className="text-white">Seconds</Text>
                 <TextInput
-                  style={{fontFamily:"Geist-Regular"}} 
+                  style={{fontFamily:"Geist-Regular",backgroundColor:colors.LIGHT_BG}} 
                   value={editSeconds}
                   onChangeText={setEditSeconds}
                   keyboardType="numeric"
@@ -199,15 +200,17 @@ const Pomodoro = () => {
             <View className="flex-row justify-between">
               <TouchableOpacity 
                 onPress={() => setShowModal(false)}
-                className="bg-[#D62059] p-3 rounded-[7px]"
+                className=" p-3 rounded-[7px]"
+                style={{backgroundColor:colors.CTA,}}
               >
-                <Text style={{fontFamily:"Geist-SemiBold"}} className="text-white">Cancel</Text>
+                <Text style={{fontFamily:"Geist-SemiBold",color:colors.PRIMARY_BG}} className="">Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 onPress={handleSaveDuration}
-                className="bg-[#D62059] p-3 rounded-[7px]"
+                style={{backgroundColor:colors.CTA,}}
+                className=" p-3 rounded-[7px]"
               >
-                <Text style={{fontFamily:"Geist-SemiBold"}} className="text-white">Save</Text>
+                <Text style={{fontFamily:"Geist-SemiBold",color:colors.PRIMARY_BG}} className="">Save</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -221,7 +224,7 @@ const Pomodoro = () => {
         animationType="slide"
       >
         <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-[#000000] p-5 rounded-lg w-[300px]">
+          <View style={{backgroundColor:colors.LIGHT_BG}} className=" p-5 rounded-lg w-[300px]">
             <Text style={{fontFamily:"Geist-SemiBold"}} className="text-center text-lg mb-4 text-white">
               Time for a Break!
             </Text>
@@ -231,15 +234,17 @@ const Pomodoro = () => {
             <View className="flex-row justify-between">
               <TouchableOpacity 
                 onPress={handleSkipBreak}
-                className="bg-[#D62059] p-3 rounded-[7px]"
+                style={{backgroundColor:colors.CTA}}
+                className=" p-3 rounded-[7px]"
               >
-                <Text style={{fontFamily:"Geist-SemiBold"}} className="text-white">Skip Break</Text>
+                <Text style={{fontFamily:"Geist-SemiBold",color:colors.PRIMARY_BG}} className="">Skip Break</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 onPress={handleStartBreak}
-                className="bg-green-500 p-3 rounded-[7px]"
+                style={{backgroundColor:colors.CTA}}
+                className=" p-3 rounded-[7px]"
               >
-                <Text style={{fontFamily:"Geist-SemiBold"}} className="text-white">Start Break</Text>
+                <Text style={{fontFamily:"Geist-SemiBold",color:colors.PRIMARY_BG}} className="">Start Break</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -256,16 +261,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: "#D62059",
+    backgroundColor: colors.CTA,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 7,
   },
   breakButton: {
-    backgroundColor: "#22C55E", // Green color for break mode
+    backgroundColor: colors.CTA, // Green color for break mode
   },
   buttonText: {
-    color: "#fff",
+    color: colors.PRIMARY_BG,
+    fontFamily: "Geist-SemiBold",
     fontSize: 18,
     fontWeight: "bold",
   },

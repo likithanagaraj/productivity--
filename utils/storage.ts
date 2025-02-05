@@ -142,3 +142,144 @@ export const deleteHabits = async (taskId: string) => {
     console.error("Error deleting task from storage:", error);
   }
 };
+
+
+
+// Categories
+
+interface Categories{
+  id:string;
+  categorytitle:string;
+  description?:string;
+}
+
+const CATEGORY_STORAGE_KEY = "category";
+
+export const saveCategories = async (newHabit: Categories) => {
+  try {
+   
+    const existingCategories = await getCategories();
+    
+    let updatedCategories: Categories[];
+    const taskIndex: number = existingCategories.findIndex((t: Categories) => t.id === newHabit.id);
+    
+    if (taskIndex >= 0) {
+      // Update existing task
+      updatedCategories = existingCategories.map((task: Categories, index: number): Categories => 
+        index === taskIndex ? newHabit : task
+      );
+    } else {
+      // Add new task
+      updatedCategories = [...existingCategories, newHabit];
+    }
+    
+    // Save to storage
+    await AsyncStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(updatedCategories));
+    // console.log("Categories saved successfully:", updatedCategories);
+    
+    return updatedCategories;
+  } catch (error) {
+    // console.error("Error in saveTask:", error);
+    throw error;
+  }
+};
+
+export const getCategories = async () => {
+  try {
+    const data = await AsyncStorage.getItem(CATEGORY_STORAGE_KEY);
+    const Categories = data ? JSON.parse(data) : [];
+    // console.log("Retrieved Categories:", Categories);
+    return Categories;
+  } catch (error) {
+    // console.error("Error in getCategories:", error);
+    return [];
+  }
+};
+
+
+export const deleteCategories = async (taskId: string) => {
+  try {
+    // Get the existing Categories
+    const existingCategories = await AsyncStorage.getItem(CATEGORY_STORAGE_KEY);
+    if (existingCategories) {
+      // Parse existing Categories and filter out the task you want to delete
+      const Categories = JSON.parse(existingCategories);
+      const updatedCategories: Categories[] = Categories.filter((task: Categories) => task.id !== taskId);
+
+      // Save the updated list back to AsyncStorage
+      await AsyncStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(updatedCategories));
+      console.log("Task deleted successfully");
+    }
+  } catch (error) {
+    console.error("Error deleting task from storage:", error);
+  }
+};
+
+
+
+// Achievements
+
+
+
+interface Achievement {
+  id: string;
+  title: string;
+  description?: string;
+}
+
+const ACHIEVEMENTS_STORAGE_KEY = "achievements";
+
+export const saveAchievements = async (newAchievement: Achievement) => {
+  try {
+    const existingAchievements = await getAchievements();
+    const achievementIndex = existingAchievements.findIndex(
+      (a) => a.id === newAchievement.id
+    );
+
+    let updatedAchievements: Achievement[];
+
+    if (achievementIndex >= 0) {
+      updatedAchievements = existingAchievements.map((achievement, index) =>
+        index === achievementIndex ? newAchievement : achievement
+      );
+    } else {
+      updatedAchievements = [...existingAchievements, newAchievement];
+    }
+
+    await AsyncStorage.setItem(
+      ACHIEVEMENTS_STORAGE_KEY,
+      JSON.stringify(updatedAchievements)
+    );
+
+    return updatedAchievements;
+  } catch (error) {
+    console.error("Error saving achievement:", error);
+    throw error;
+  }
+};
+
+export const getAchievements = async (): Promise<Achievement[]> => {
+  try {
+    const data = await AsyncStorage.getItem(ACHIEVEMENTS_STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error("Error retrieving achievements:", error);
+    return [];
+  }
+};
+
+export const deleteAchievement = async (achievementId: string) => {
+  try {
+    const existingAchievements = await getAchievements();
+    const updatedAchievements = existingAchievements.filter(
+      (achievement) => achievement.id !== achievementId
+    );
+
+    await AsyncStorage.setItem(
+      ACHIEVEMENTS_STORAGE_KEY,
+      JSON.stringify(updatedAchievements)
+    );
+  } catch (error) {
+    console.error("Error deleting achievement from storage:", error);
+  }
+};

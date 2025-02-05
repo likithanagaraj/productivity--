@@ -18,7 +18,10 @@ import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import colors from "../../../utils/colors";
 import { AnimatedView } from "react-native-reanimated/lib/typescript/component/View";
-import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 interface Tasks {
@@ -81,21 +84,21 @@ const Task = () => {
     translateX.value += e.changeX;
     translateY.value += e.changeY;
   });
-  const containerStyle = useAnimatedStyle(()=>{
-    return{
-      transform:[
+  const containerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
         {
-          translateX:translateX.value
+          translateX: translateX.value,
         },
         {
-          translateY:translateY.value
-        }
-      ]
-    }
-  })
+          translateY: translateY.value,
+        },
+      ],
+    };
+  });
   return (
     <View
-      style={[,{backgroundColor: colors.PRIMARY_BG}]}
+      style={[, { backgroundColor: colors.PRIMARY_BG }]}
       className="h-full w-full  "
     >
       <View className="p-5 h-full ">
@@ -105,104 +108,99 @@ const Task = () => {
         >
           Task
         </Text>
-        
-          <ScrollView className="mb-5">
-            {tasks.length > 0 ? (
-              tasks.map((task) => (
-                <View
-                  key={task.id}
-                  
-                  className="p-4 bg-gray-900 rounded-lg mb-3 flex justify-between items-center flex-row gap-2"
-                >
-                  <View className="flex flex-col gap-3">
-                    {task.subtasks.length === 0 && (
-                      <View className="flex flex-row gap-3 items-center">
-                        <Checkbox
-                          style={{ width: 18, height: 18 }}
-                          value={checkedStates[`${task.id}-main`] || false}
-                          onValueChange={() => handleCheckbox(task.id)}
-                        />
-                        <Text
-                          className={
-                            checkedStates[`${task.id}-main`]
-                              ? "text-white line-through text-lg font-bold"
-                              : "text-white text-lg font-bold"
-                          }
-                        >
-                          {task.title}
-                        </Text>
-                      </View>
-                    )}
 
-                    {task.subtasks.length > 0 && (
-                      <>
-                        <Text className="text-white text-lg font-bold">
-                          {task.title}
-                        </Text>
-                        {task.subtasks.map((sub: string, index: number) => {
-                          const checkboxKey = `${task.id}-${index}`;
-                          return (
-                           
-                              <View
+        <ScrollView className="mb-5">
+          {tasks.length > 0 ? (
+            tasks.map((task) => (
+              <View
+                key={task.id}
+                className="p-4 bg-gray-900 rounded-lg mb-3 flex justify-between items-center flex-row gap-2"
+              >
+                <View className="flex flex-col gap-3">
+                  {task.subtasks.length === 0 && (
+                    <View className="flex flex-row gap-3 items-center">
+                      <Checkbox
+                        style={{ width: 18, height: 18 }}
+                        value={checkedStates[`${task.id}-main`] || false}
+                        onValueChange={() => handleCheckbox(task.id)}
+                      />
+                      <Text
+                        className={
+                          checkedStates[`${task.id}-main`]
+                            ? "text-white line-through text-lg font-bold"
+                            : "text-white text-lg font-bold"
+                        }
+                      >
+                        {task.title}
+                      </Text>
+                    </View>
+                  )}
+
+                  {task.subtasks.length > 0 && (
+                    <>
+                      <Text className="text-white text-lg font-bold">
+                        {task.title}
+                      </Text>
+                      {task.subtasks.map((sub: string, index: number) => {
+                        const checkboxKey = `${task.id}-${index}`;
+                        return (
+                          <View
                             style={[containerStyle]}
-                              key={index}
-                              className="flex flex-row gap-3 items-center ml-6"
+                            key={index}
+                            className="flex flex-row gap-3 items-center ml-6"
+                          >
+                            <Checkbox
+                              style={{ width: 18, height: 18 }}
+                              value={checkedStates[checkboxKey] || false}
+                              onValueChange={() =>
+                                handleCheckbox(task.id, index)
+                              }
+                            />
+                            <Text
+                              className={
+                                checkedStates[checkboxKey]
+                                  ? "text-white line-through"
+                                  : "text-white"
+                              }
                             >
-                              <Checkbox
-                              
-                                style={{ width: 18, height: 18 }}
-                                value={checkedStates[checkboxKey] || false}
-                                onValueChange={() =>
-                                  handleCheckbox(task.id, index)
-                                }
-                              />
-                              <Text
-                              
-                                className={
-                                  checkedStates[checkboxKey]
-                                    ? "text-white line-through"
-                                    : "text-white"
-                                }
-                              >
-                                {sub}
-                              </Text>
-                            </View>
-                            
-                          );
-                        })}
-                      </>
-                    )}
-                  </View>
-                  <View className="flex flex-row gap-5">
-                    <FontAwesome
-                      onPress={() =>
-                        router.push({
-                          pathname: "/(screens)/newtask",
-                          params: {
-                            id: task.id,
-                            task: task.title,
-                            subtasks: JSON.stringify(task.subtasks),
-                          },
-                        })
-                      }
-                      name="edit"
-                      size={18}
-                      color="white"
-                    />
-                    <FontAwesome
-                      onPress={() => handledelete(task.id)}
-                      name="trash"
-                      size={18}
-                      color="white"
-                    />
-                  </View>
+                              {sub}
+                            </Text>
+                          </View>
+                        );
+                      })}
+                    </>
+                  )}
                 </View>
-              ))
-            ) : (
-              <Text className="text-gray-400">No tasks added yet.</Text>
-            )}
-          </ScrollView>
-        
+                <View className="flex flex-row gap-5">
+                  <FontAwesome
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(screens)/newtask",
+                        params: {
+                          id: task.id,
+                          task: task.title,
+                          subtasks: JSON.stringify(task.subtasks),
+                        },
+                      })
+                    }
+                    name="edit"
+                    size={18}
+                    color="white"
+                  />
+                  <FontAwesome
+                    onPress={() => handledelete(task.id)}
+                    name="trash"
+                    size={18}
+                    color="white"
+                  />
+                </View>
+              </View>
+            ))
+          ) : (
+            <Text className="text-gray-400">No tasks added yet.</Text>
+          )}
+        </ScrollView>
+
         <Link
           href={"/(screens)/newtask"}
           className="absolute bottom-8 right-8 m-2  "
@@ -213,7 +211,7 @@ const Task = () => {
         </Link>
         {/* <Link href={"/(screens)/newtask"}>
           <Button
-            labelStyle={{ fontFamily: "Geist-SemiBold" }}
+            labelStyle={{ fontFamily: "Poppins-SemiBold" }}
             style={{ width: 200 }}
             mode="contained-tonal"
             textColor="white"
@@ -222,7 +220,6 @@ const Task = () => {
             Create new Task
           </Button>
         </Link> */}
-
       </View>
     </View>
   );
