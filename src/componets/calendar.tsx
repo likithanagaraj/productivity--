@@ -30,7 +30,7 @@ const HorizontalCalendar = () => {
     if (dates.length > 0) {
       scrollToCurrentDate()
     }
-  }, [dates, selectedDate])
+  }, [dates, selectedDate, scrollViewRef])
 
   const scrollToCurrentDate = () => {
     if (scrollViewRef.current) {

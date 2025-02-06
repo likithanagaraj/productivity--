@@ -101,10 +101,10 @@ const Task = () => {
       style={[, { backgroundColor: colors.PRIMARY_BG }]}
       className="h-full w-full  "
     >
-      <View className="p-5 h-full ">
+      <View className="p-6 h-full ">
         <Text
-          style={{ fontFamily: "Geist-SemiBold", marginBottom: 20 }}
-          className="text-white text-3xl  "
+          style={{ fontFamily: "Geist-SemiBold", marginBottom: 20,color:colors.PRIMARY_TEXT }}
+          className=" text-3xl  "
         >
           Task
         </Text>
@@ -114,17 +114,20 @@ const Task = () => {
             tasks.map((task) => (
               <View
                 key={task.id}
-                className="p-4 bg-gray-900 rounded-lg mb-3 flex justify-between items-center flex-row gap-2"
+                style={{backgroundColor:colors.LIGHT_BG}}
+                className="p-4  rounded-lg mb-3 flex justify-between items-center flex-row gap-2"
               >
                 <View className="flex flex-col gap-3">
                   {task.subtasks.length === 0 && (
                     <View className="flex flex-row gap-3 items-center">
                       <Checkbox
                         style={{ width: 18, height: 18 }}
+                        color={colors.PRIMARY_TEXT + 95}
                         value={checkedStates[`${task.id}-main`] || false}
                         onValueChange={() => handleCheckbox(task.id)}
                       />
                       <Text
+                      style={{ fontFamily: "Geist-Regular" }}
                         className={
                           checkedStates[`${task.id}-main`]
                             ? "text-white line-through text-lg font-bold"
@@ -138,7 +141,7 @@ const Task = () => {
 
                   {task.subtasks.length > 0 && (
                     <>
-                      <Text className="text-white text-lg font-bold">
+                      <Text style={{color:colors.PRIMARY_TEXT,fontFamily:"Geist-Medium"}} className=" text-[18px] ">
                         {task.title}
                       </Text>
                       {task.subtasks.map((sub: string, index: number) => {
@@ -152,17 +155,20 @@ const Task = () => {
                             <Checkbox
                               style={{ width: 18, height: 18 }}
                               value={checkedStates[checkboxKey] || false}
+                        color={colors.PRIMARY_TEXT + 95}
+
                               onValueChange={() =>
                                 handleCheckbox(task.id, index)
                               }
                             />
                             <Text
+                            style={{fontFamily:"Geist-Regular",color:colors.PRIMARY_TEXT + 95}}
                               className={
                                 checkedStates[checkboxKey]
                                   ? "text-white line-through"
                                   : "text-white"
                               }
-                            >
+                            > 
                               {sub}
                             </Text>
                           </View>
@@ -205,8 +211,8 @@ const Task = () => {
           href={"/(screens)/newtask"}
           className="absolute bottom-8 right-8 m-2  "
         >
-          <View className="bg-[#D62059] p-3 rounded-full">
-            <Ionicons name="add-outline" size={28} color="#fff" />
+          <View style={{backgroundColor:colors.PRIMARY_TEXT}} className="p-3 rounded-full">
+            <Ionicons name="add-outline" size={28} color={colors.PRIMARY_BG} />
           </View>
         </Link>
         {/* <Link href={"/(screens)/newtask"}>

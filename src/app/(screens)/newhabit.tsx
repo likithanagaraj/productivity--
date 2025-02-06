@@ -61,7 +61,7 @@ const Newhabit = () => {
                   color: colors.PRIMARY_TEXT,
                 }}
                 cursorColor="#666666"
-                outlineColor={colors.PRIMARY_BG}
+                outlineColor="#666666"
                 activeOutlineColor={colors.CTA}
                 label={id ? "Edit Habit🤣" : "Enter task name"}
                 value={habitName}
@@ -78,7 +78,7 @@ const Newhabit = () => {
                 paddingBottom: 35,
               }}
               cursorColor="#666666"
-              outlineColor={colors.PRIMARY_BG}
+               outlineColor="#666666"
               activeOutlineColor={colors.CTA}
               label="Enter task Description"
               value={description}
@@ -96,7 +96,8 @@ const Newhabit = () => {
                     testID: "1",
                     style: {
                       borderRadius: 5,
-                      borderColor: colors.PRIMARY_BG,
+                      borderColor: "#666666",
+                      
                       backgroundColor:
                         value === "Low" ? colors.CTA : colors.LIGHT_BG,
                     },
@@ -116,7 +117,8 @@ const Newhabit = () => {
                     style: {
                       backgroundColor:
                         value === "Medium" ? colors.CTA : colors.LIGHT_BG,
-                      borderColor: colors.PRIMARY_BG,
+                      borderColor: "#666666",
+
                     },
                     labelStyle: {
                       color:
@@ -133,7 +135,7 @@ const Newhabit = () => {
                     testID: "3",
                     style: {
                       borderRadius: 5,
-                      borderColor: colors.PRIMARY_BG,
+                      borderColor: "#666666",
                       backgroundColor:
                         value === "High" ? colors.CTA : colors.LIGHT_BG,
                     },

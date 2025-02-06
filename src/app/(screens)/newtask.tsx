@@ -85,8 +85,8 @@ const NewTask = () => {
     <SafeAreaView style={{backgroundColor:colors.PRIMARY_BG}} className="h-full w-full  p-5">
       <ScrollView>
         <Text
-          style={{ fontFamily: "Geist-SemiBold" }}
-          className="text-white py-5 text-[22px]"
+          style={{ fontFamily: "Geist-SemiBold",color:colors.PRIMARY_TEXT }}
+          className=" py-5 text-[22px]"
         >
           Create a New Task
         </Text>
@@ -97,6 +97,7 @@ const NewTask = () => {
             cursorColor="#666666"
             outlineColor="#666666"
             activeOutlineColor="#fff"
+            style={{backgroundColor:colors.LIGHT_BG}}
             label="Task "
             value={task}
             onChangeText={(text) => settask(text)}
@@ -104,20 +105,21 @@ const NewTask = () => {
           {errors.task && <Text className="text-red-500">{errors.task}</Text>}
           <View>
             <Text
-              style={{ fontFamily: "Geist-Regular" }}
-              className="text-white text-[16px]"
+              style={{ fontFamily: "Geist-Regular", }}
+              className=" text-[16px] text-[#9c9c9c]"
             >
               Sub Task
             </Text>
 
             {subtask.map((subtaskText, index) => (
-              <View key={index} className="flex gap-5">
+              <View key={index} className="mt-5 mb-3">
                 <TextInput
                   mode="outlined"
                   selectionColor="#666666"
                   cursorColor="#666666"
                   outlineColor="#666666"
                   activeOutlineColor="#fff"
+                  style={{backgroundColor:colors.LIGHT_BG}}
                   label={`Subtask ${index + 1}`}
                   value={subtaskText}
                   onChangeText={(text) => updateSubtask(index, text)}
@@ -144,7 +146,7 @@ const NewTask = () => {
 
           <Button
             onPress={handleSubmit}
-            labelStyle={{ color: "white" }}
+            labelStyle={{ color: colors.PRIMARY_BG, fontFamily: "Geist-SemiBold" }}
             mode="contained"
             style={styles.submitButton}
           >
@@ -161,6 +163,6 @@ export default NewTask;
 const styles = StyleSheet.create({
   submitButton: {
     marginTop: 20,
-    backgroundColor: "#D62059",
+    backgroundColor: colors.CTA
   },
 });
