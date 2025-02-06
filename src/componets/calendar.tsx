@@ -2,12 +2,27 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions } from "react-native"
 import React, { useState, useEffect, useRef } from "react"
 import colors from "../../utils/colors"
-
-const HorizontalCalendar = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date())
+interface CalendarProps {
+  onSelectDate: (date: Date) => void;
+  selectedDates: Date;
+}
+const HorizontalCalendar = ({ onSelectDate, selectedDates }: CalendarProps) => {
+  const [selectedDate, setSelectedDate] = useState(selectedDate || new Date())
   const [dates, setDates] = useState([])
   const scrollViewRef = useRef(null)
-
+  const handleDateSelection = (date: Date) => {
+    setSelectedDate(date);
+    onSelectDate(date);
+  };
+  const scrollToDate = (date) => {
+    if (scrollViewRef.current) {
+      const dateIndex = dates.findIndex(d => d.toDateString() === date.toDateString())
+      if (dateIndex !== -1) {
+        const scrollX = dateIndex * 40 // 45 is the width of each date container
+        scrollViewRef.current.scrollTo({ x: scrollX, animated: true })
+      }
+    }
+  }
   useEffect(() => {
     const getDates = () => {
       const datesArray = []
@@ -28,14 +43,14 @@ const HorizontalCalendar = () => {
 
   useEffect(() => {
     if (dates.length > 0) {
-      scrollToCurrentDate()
+      scrollToDate(selectedDates)
     }
-  }, [dates, selectedDate, scrollViewRef])
+  }, [dates, selectedDate])
 
   const scrollToCurrentDate = () => {
     if (scrollViewRef.current) {
       const currentDateIndex = Math.floor(dates.length / 2)
-      scrollViewRef.current.scrollTo({ x: currentDateIndex * 40, animated: false })
+      scrollViewRef.current.scrollTo({ x: currentDateIndex * 80, animated: false })
     }
   }
 
@@ -72,7 +87,7 @@ const HorizontalCalendar = () => {
           <TouchableOpacity
             key={index}
             style={[styles.dateContainer, isSelected(date) && styles.selectedDate, isToday(date) && styles.today]}
-            onPress={() => setSelectedDate(date)}
+            onPress={() => handleDateSelection(date)}
           >
             <Text  style={[styles.dayName, isSelected(date) && styles.selectedText]}>{getDayName(date)}</Text>
             <Text style={[styles.dayNumber, isSelected(date) && styles.selectedText]}>{getDayNumber(date)}</Text>

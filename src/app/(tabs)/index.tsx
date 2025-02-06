@@ -14,7 +14,7 @@ import {
 } from "react-native-paper";
 import HeaderBar from "../../componets/header";
 import colors from "../../../utils/colors";
-import { getHabits } from "../../../utils/storage";
+import { getHabits, storeHabitCompletion, getHabitCompletions } from "../../../utils/storage";
 import ConfettiCannon from 'react-native-confetti-cannon';
 
 interface Habits {
@@ -24,10 +24,17 @@ interface Habits {
   priority?: string;
 }
 
+interface HabitCompletion {
+  habitId: string;
+  date: string;
+  completed: boolean;
+}
+
 const habits = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [HabitList, setHabitList] = useState<Habits[]>([]);
-  const [checkedHabits, setCheckedHabits] = useState<{ [key: string]: boolean }>({});
+  const [completions, setCompletions] = useState<{ [key: string]: { [key: string]: boolean } }>({});
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [visible, setVisible] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState<Habits | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -38,8 +45,8 @@ const habits = () => {
   const sortHabits = (habits: Habits[]) => {
     return [...habits].sort((a, b) => {
       // First, sort by completion status
-      const aCompleted = checkedHabits[a.id] ? 1 : 0;
-      const bCompleted = checkedHabits[b.id] ? 1 : 0;
+      const aCompleted = completions[selectedDate]?.[a.id] ? 1 : 0;
+      const bCompleted = completions[selectedDate]?.[b.id] ? 1 : 0;
       
       if (aCompleted !== bCompleted) {
         return aCompleted - bCompleted;
@@ -48,12 +55,9 @@ const habits = () => {
       // If completion status is the same, sort by priority
       const getPriorityValue = (priority?: string) => {
         switch (priority?.toLowerCase()) {
-          case "high":
-            return 2;
-          case "medium":
-            return 1;
-          default:
-            return 0;
+          case "high": return 2;
+          case "medium": return 1;
+          default: return 0;
         }
       };
 
@@ -61,25 +65,16 @@ const habits = () => {
     });
   };
 
-  const getPriorityColor = (priority?: string) => {
-    switch (priority?.toLowerCase()) {
-      case "high":
-        return "#FF4444";
-      case "medium":
-        return "#FFBB33";
-      default:
-        return "#00C851";
-    }
-  };
-
   const loadHabits = async () => {
     try {
       setRefreshing(true);
       const storedHabits = await getHabits();
+      const storedCompletions = await getHabitCompletions();
+      setCompletions(storedCompletions || {});
       const sortedHabits = sortHabits(storedHabits);
       setHabitList(sortedHabits);
     } catch (error) {
-      console.error("Error loading tasks:", error);
+      console.error("Error loading habits:", error);
     } finally {
       setRefreshing(false);
     }
@@ -87,7 +82,7 @@ const habits = () => {
 
   useEffect(() => {
     loadHabits();
-  }, [checkedHabits]); // Re-sort when checked habits change
+  }, [selectedDate]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -101,51 +96,66 @@ const habits = () => {
     setShowConfetti(false);
   };
 
-  const toggleHabit = (habit: Habits) => {
-    const isCurrentlyUnchecked = !checkedHabits[habit.id];
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date.toISOString().split('T')[0]);
+  };
+
+  const toggleHabit = async (habit: Habits) => {
+    const isCurrentlyUnchecked = !completions[selectedDate]?.[habit.id];
     
     if (isCurrentlyUnchecked) {
       setSelectedHabit(habit);
       setVisible(true);
       setTimeout(() => setShowConfetti(true), 100);
     } else {
-      setCheckedHabits((prev) => ({
-        ...prev,
-        [habit.id]: false,
-      }));
+      const newCompletions = {
+        ...completions,
+        [selectedDate]: {
+          ...(completions[selectedDate] || {}),
+          [habit.id]: false
+        }
+      };
+      setCompletions(newCompletions);
+      await storeHabitCompletion(newCompletions);
     }
   };
 
-  const confirmHabitCompletion = () => {
+  const confirmHabitCompletion = async () => {
     if (selectedHabit) {
-      setCheckedHabits((prev) => ({
-        ...prev,
-        [selectedHabit.id]: true,
-      }));
+      const newCompletions = {
+        ...completions,
+        [selectedDate]: {
+          ...(completions[selectedDate] || {}),
+          [selectedHabit.id]: true
+        }
+      };
+      setCompletions(newCompletions);
+      await storeHabitCompletion(newCompletions);
     }
     hideModal();
   };
 
   const renderHabitItem = (habit: Habits) => {
-    const isCompleted = checkedHabits[habit.id];
+    const isCompleted = completions[selectedDate]?.[habit.id];
     
-    const handleEdit = ()=>{
+    const handleEdit = () => {
       router.push(`/newhabit?id=${habit.id}`);
-    }
+    };
+
     return (
       <View
         key={habit.id}
         className="mb-4 p-4 rounded-lg flex flex-row items-center"
         style={{
-          backgroundColor: colors.CTA,
+          backgroundColor: colors.LIGHT_BG,
           opacity: isCompleted ? 0.6 : 1,
         }}
       >
         <View className="flex-1">
           <Text
-          onPress={handleEdit}
+            onPress={handleEdit}
             style={{
-              color: colors.PRIMARY_BG,
+              color: colors.PRIMARY_TEXT,
               fontFamily: "Geist-Bold",
               fontSize: 16,
               textDecorationLine: isCompleted ? 'line-through' : 'none',
@@ -156,8 +166,8 @@ const habits = () => {
           {habit.description && (
             <Text
               style={{
-                color: colors.LIGHT_BG,
-                fontFamily: "Geist-Light",
+                color: colors.PRIMARY_TEXT + 80,
+                fontFamily: "Geist-Regular",
                 fontSize: 12,
                 textDecorationLine: isCompleted ? 'line-through' : 'none',
               }}
@@ -171,8 +181,8 @@ const habits = () => {
           <Checkbox
             status={isCompleted ? "checked" : "unchecked"}
             onPress={() => toggleHabit(habit)}
-            color={colors.PRIMARY_BG}
-            uncheckedColor={colors.PRIMARY_BG}
+            color={colors.PRIMARY_TEXT}
+            uncheckedColor={colors.PRIMARY_TEXT}
           />
         </View>
       </View>
@@ -188,7 +198,7 @@ const habits = () => {
         >
           <View>
             <HeaderBar title="Habits" icon1="magnify" icon2="calendar" />
-            <BasicCalendar />
+            <BasicCalendar onSelectDate={handleDateSelect} selectedDates={new Date(selectedDate)} />
           </View>
           <View className="p-5">
             {HabitList.length > 0 ? (

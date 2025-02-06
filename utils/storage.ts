@@ -283,3 +283,26 @@ export const deleteAchievement = async (achievementId: string) => {
     console.error("Error deleting achievement from storage:", error);
   }
 };
+
+
+
+
+// Add these functions to your storage.ts file
+
+export const storeHabitCompletion = async (completions: { [key: string]: { [key: string]: boolean } }) => {
+  try {
+    await AsyncStorage.setItem('habitCompletions', JSON.stringify(completions));
+  } catch (error) {
+    console.error('Error storing habit completions:', error);
+  }
+};
+
+export const getHabitCompletions = async () => {
+  try {
+    const completions = await AsyncStorage.getItem('habitCompletions');
+    return completions ? JSON.parse(completions) : {};
+  } catch (error) {
+    console.error('Error getting habit completions:', error);
+    return {};
+  }
+};

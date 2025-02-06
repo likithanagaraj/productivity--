@@ -11,8 +11,9 @@ const Newhabit = () => {
   const {id} = useLocalSearchParams()
   
   const generateId = () => {
-    return crypto.randomUUID(); // Generates a universally unique identifier (UUID)
+    return Date.now().toString() + Math.random().toString(36).substr(2, 9);
   };
+
   
   const [value, setValue] = React.useState("");
   const [habitName, sethabitName] = useState("");

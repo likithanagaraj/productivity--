@@ -28,11 +28,13 @@ const Achievements = () => {
   }, []);
 
   const renderAchievement = ({ item }:any) => (
-    <View style={styles.achievementItem}>
-      <FontAwesome5 name="medal" size={24} color={colors.PRIMARY_TEXT} />
+   <View style={styles.achievementItem}>
+     <FontAwesome5 name="medal" size={24} color={colors.PRIMARY_TEXT} />
+    <View  className="flex flex-col ">
       <Text style={styles.achievementTitle}>{item.title}</Text>
       <Text style={styles.achievementDescription}>{item.description}</Text>
     </View>
+   </View>
   );
 
   return (
@@ -50,6 +52,8 @@ const Achievements = () => {
       {achievements.length > 0 ? (
         <FlatList
           data={achievements}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
           renderItem={renderAchievement}
           keyExtractor={(item) => item.id}
           style={styles.achievementsList}
@@ -79,23 +83,25 @@ export default Achievements;
 const styles = StyleSheet.create({
   achievementItem: {
     backgroundColor: colors.LIGHT_BG,
-    padding: 15,
+    padding: 12,
     marginVertical: 8,
     borderRadius: 10,
-    width: "50%",
+    width: "45%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 15,
+   
+    // justifyContent: "space-between",
   },
   achievementTitle: {
     fontFamily: "Geist-SemiBold",
-    fontSize: 18,
+    fontSize: 16,
     color: colors.PRIMARY_TEXT,
   },
   achievementDescription: {
-    fontFamily: "Geist-Regular",
-    color: colors.PRIMARY_TEXT,
+    fontFamily: "Geist-Medium",
+    color: colors.PRIMARY_TEXT + 90,
     marginTop: 5,
   },
   achievementsList: {

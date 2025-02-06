@@ -73,7 +73,7 @@ const NewAchievement = () => {
                   color: colors.PRIMARY_TEXT,
                 }}
                 cursorColor="#666666"
-                outlineColor={colors.PRIMARY_BG}
+                outlineColor={"#666666"}
                 activeOutlineColor={colors.CTA}
                 label="Achievement Name"
                 value={achievementName}
@@ -90,7 +90,7 @@ const NewAchievement = () => {
                 paddingBottom: 35,
               }}
               cursorColor="#666666"
-              outlineColor={colors.PRIMARY_BG}
+              outlineColor={"#666666"}
               activeOutlineColor={colors.CTA}
               label="Achievement Description"
               value={description}

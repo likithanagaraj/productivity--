@@ -163,6 +163,7 @@ export default NewTask;
 const styles = StyleSheet.create({
   submitButton: {
     marginTop: 20,
-    backgroundColor: colors.CTA
+    backgroundColor: colors.CTA,
+    borderRadius: 7,
   },
 });
