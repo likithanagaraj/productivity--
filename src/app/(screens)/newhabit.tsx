@@ -1,40 +1,82 @@
 import { Alert, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
-import { Button, SegmentedButtons, TextInput } from "react-native-paper";
+import React, { useState, useEffect } from "react";
+import { Button, SegmentedButtons, TextInput, Dialog, Portal } from "react-native-paper";
 import { router, useLocalSearchParams } from "expo-router";
 import colors from "../../../utils/colors";
-import { saveHabits } from "../../../utils/storage";
-
+import { saveHabits, getHabits, deleteHabits } from "../../../utils/storage";
 import 'react-native-get-random-values';
+import Ionicons from "@expo/vector-icons/Ionicons";
+interface Habits {
+  id: string;
+  habittitle: string;
+  description: string;
+  priority: string;
+}
 
 const Newhabit = () => {
-  const {id} = useLocalSearchParams()
+  const { id: idParam } = useLocalSearchParams();
+  const id = Array.isArray(idParam) ? idParam[0] : idParam;
   
+  const [value, setValue] = React.useState<string>("");
+  const [habitName, setHabitName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [errors, setErrors] = useState<string>("");
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    const loadHabitData = async () => {
+      if (id) {
+        try {
+          const habits = await getHabits();
+          const existingHabit = habits.find((habit: Habits) => habit.id === id);
+          if (existingHabit) {
+            setHabitName(existingHabit.habittitle);
+            setDescription(existingHabit.description);
+            setValue(existingHabit.priority);
+          }
+        } catch (error) {
+          Alert.alert('Error', 'Failed to load habit data');
+        }
+      }
+    };
+    
+    loadHabitData();
+  }, [id]);
+
   const generateId = () => {
     return Date.now().toString() + Math.random().toString(36).substr(2, 9);
   };
 
-  
-  const [value, setValue] = React.useState("");
-  const [habitName, sethabitName] = useState("");
-  const [description, setdescription] = useState("");
-  const [errors, seterrors] = useState("");
-  const handleSubmitHabit = async() => {
+  const handleSubmitHabit = async () => {
     if (habitName.trim() === "") {
-      seterrors("Please enter a habit name");
+      setErrors("Please enter a habit name");
       return;
     }
+
     try {
-      const newhabit = {
-        id: generateId(),
+      const habitData: Habits = {
+        id: id || generateId(),
         habittitle: habitName.trim(),
         description: description,
         priority: value,
       };
-      await saveHabits(newhabit);
+      
+      await saveHabits(habitData);
       router.push("/");
     } catch (error) {
-       Alert.alert('Error', 'Failed to save task');
+      Alert.alert('Error', `Failed to ${id ? 'update' : 'save'} habit`);
+    }
+  };
+
+  const handleDeleteHabit = async () => {
+    try {
+      if (id) {
+        await deleteHabits(id);
+        setDeleteDialogVisible(false);
+        router.push("/");
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete habit');
     }
   };
 
@@ -42,15 +84,29 @@ const Newhabit = () => {
     <SafeAreaView>
       <View
         style={{ backgroundColor: colors.PRIMARY_BG }}
-        className=" h-full w-full px-6 py-8 flex flex-col justify-between"
+        className="h-full w-full px-6 py-8 flex flex-col justify-between"
       >
         <View className="flex flex-col gap-8">
-          <Text
-            style={{ fontFamily: "Geist-SemiBold", color: colors.PRIMARY_TEXT }}
-            className=" text-[22px]  "
-          >
-            Create Habit
-          </Text>
+          <View className="flex flex-row justify-between items-center">
+            <Text
+              style={{ fontFamily: "Geist-SemiBold", color: colors.PRIMARY_TEXT }}
+              className="text-[22px]"
+            >
+              {id ? 'Edit Habit' : 'Create Habit'}
+            </Text>
+            {id && (
+              <Button
+                mode="text"
+                
+                onPress={() => setDeleteDialogVisible(true)}
+                labelStyle={{
+                  fontFamily: "Geist-Medium",
+                }}
+              >
+                <Ionicons name="trash" size={20} color={colors.PRIMARY_TEXT} />
+              </Button>
+            )}
+          </View>
 
           <View className="flex flex-col gap-5">
             <View>
@@ -64,9 +120,12 @@ const Newhabit = () => {
                 cursorColor="#666666"
                 outlineColor="#666666"
                 activeOutlineColor={colors.CTA}
-                label={id ? "Edit Habit🤣" : "Enter task name"}
+                label="Enter habit name"
                 value={habitName}
-                onChangeText={(text) => sethabitName(text)}
+                onChangeText={(text) => {
+                  setHabitName(text);
+                  setErrors("");
+                }}
               />
               {errors && <Text className="text-red-500">{errors}</Text>}
             </View>
@@ -79,14 +138,14 @@ const Newhabit = () => {
                 paddingBottom: 35,
               }}
               cursorColor="#666666"
-               outlineColor="#666666"
+              outlineColor="#666666"
               activeOutlineColor={colors.CTA}
-              label="Enter task Description"
+              label="Enter habit description"
               value={description}
-              onChangeText={(text) => setdescription(text)}
+              onChangeText={setDescription}
             />
 
-            <SafeAreaView >
+            <SafeAreaView>
               <SegmentedButtons
                 value={value}
                 onValueChange={setValue}
@@ -98,7 +157,6 @@ const Newhabit = () => {
                     style: {
                       borderRadius: 5,
                       borderColor: "#666666",
-                      
                       backgroundColor:
                         value === "Low" ? colors.CTA : colors.LIGHT_BG,
                     },
@@ -119,7 +177,6 @@ const Newhabit = () => {
                       backgroundColor:
                         value === "Medium" ? colors.CTA : colors.LIGHT_BG,
                       borderColor: "#666666",
-
                     },
                     labelStyle: {
                       color:
@@ -164,8 +221,38 @@ const Newhabit = () => {
             fontFamily: "Geist-Bold",
           }}
         >
-          Create Habit
+          {id ? 'Update Habit' : 'Create Habit'}
         </Button>
+
+        <Portal>
+          <Dialog
+            visible={deleteDialogVisible}
+            onDismiss={() => setDeleteDialogVisible(false)}
+            style={{backgroundColor: colors.PRIMARY_BG}}
+          >
+            <Dialog.Title style={{ fontFamily: "Geist-Bold" }}>Delete Habit</Dialog.Title>
+            <Dialog.Content>
+              <Text style={{ fontFamily: "Geist-Medium",color:colors.PRIMARY_TEXT }}>
+                Are you sure you want to delete this habit? This action cannot be undone.
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions style={{display:"flex",flexDirection:"row",justifyContent:"space-between"}} >
+              <Button 
+                onPress={() => setDeleteDialogVisible(false)}
+                labelStyle={{ fontFamily: "Geist-Medium" ,color:colors.PRIMARY_TEXT}}
+              >
+                Cancel
+              </Button>
+              <Button 
+                onPress={handleDeleteHabit}
+                textColor={colors.CTA}
+                labelStyle={{ fontFamily: "Geist-Bold" }}
+              >
+                Delete
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </View>
     </SafeAreaView>
   );
@@ -175,9 +262,7 @@ export default Newhabit;
 
 const styles = StyleSheet.create({
   submitButton: {
-    // marginTop: 20,
     backgroundColor: colors.CTA,
-
     borderRadius: 7,
   },
 });

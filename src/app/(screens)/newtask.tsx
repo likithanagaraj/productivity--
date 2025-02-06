@@ -88,7 +88,7 @@ const NewTask = () => {
           style={{ fontFamily: "Geist-SemiBold",color:colors.PRIMARY_TEXT }}
           className=" py-5 text-[22px]"
         >
-          Create a New Task
+          { !id ? "Create a New Task" : "Edit Task" }
         </Text>
         <View className="flex flex-col gap-5">
           <TextInput
@@ -112,7 +112,7 @@ const NewTask = () => {
             </Text>
 
             {subtask.map((subtaskText, index) => (
-              <View key={index} className="mt-5 mb-3">
+              <View key={index} className="mt-5 mb-3 " >
                 <TextInput
                   mode="outlined"
                   selectionColor="#666666"
@@ -150,7 +150,7 @@ const NewTask = () => {
             mode="contained"
             style={styles.submitButton}
           >
-            Create Task
+            {id ? "Update Task" : "Create Task"}
           </Button>
         </View>
       </ScrollView>
