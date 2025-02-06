@@ -8,6 +8,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { PaperProvider } from "react-native-paper";
 import colors from "../../../utils/colors";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { FontAwesome5 } from "@expo/vector-icons";
 SplashScreen.preventAutoHideAsync();
 const TabLAyout = () => {
 
@@ -34,7 +35,7 @@ const TabLAyout = () => {
         screenOptions={{
           tabBarActiveTintColor: colors.CTA,
           headerShown: false,
-          tabBarInactiveTintColor:  colors.PRIMARY_TEXT,
+          tabBarInactiveTintColor:  "#999999",
           tabBarStyle: {
             backgroundColor: colors.PRIMARY_BG,
             borderColor: colors.LIGHT_BG,
@@ -89,8 +90,8 @@ const TabLAyout = () => {
           options={{
             title: "Achievements",
             tabBarIcon: ({ color }) => (
-              <Ionicons name="trophy" size={22} color={color} />
-              // <FontAwesome size={24} name="trophy" color={color} />
+              // <Ionicons name="medal-outline" size={22} color={color} />
+              <FontAwesome5 size={21} name="medal" color={color} />
             ),
           }}
         />

@@ -26,14 +26,14 @@ export default function RootLayot() {
           name="(screens)/numeric-category"
           options={{ headerShown: false }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="(screens)/checklist-category"
           options={{ headerShown: false }}
-        />
-        <Stack.Screen
+        /> */}
+        {/* <Stack.Screen
           name="(screens)/habit-schedule"
           options={{ headerShown: false }}
-        />
+        /> */}
         <Stack.Screen
           name="(screens)/task-category"
           options={{ headerShown: false }}

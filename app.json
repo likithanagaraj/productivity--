@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "learn-expo",
+    "name": "Productivity++",
     "slug": "learn-expo",
     "version": "1.0.0",
     "scheme": "learn-expo",
@@ -20,17 +20,25 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#18181B",
-        "color": "#FFFFFF"
-      }
+        "backgroundColor": "#18181B"
+      },
+      "package": "com.likitha.n.learnexpo"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-      
     },
     "plugins": [
       "expo-router",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c9a3338b-9c0f-4939-adf5-f796b0f237a1"
+      }
+    },
+    "owner": "likitha.n"
   }
 }
