@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, Text, View, FlatList, TouchableOpacity } from "react-native";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import colors from "../../../utils/colors";
 import { getAchievements } from "../../../utils/storage";
 
@@ -11,7 +11,7 @@ const Achievements = () => {
     title: string;
     description?: string;
   }
-  
+
   const [achievements, setAchievements] = useState<Achievement[]>([]);
 
   const fetchAchievements = async () => {
@@ -26,15 +26,20 @@ const Achievements = () => {
   useEffect(() => {
     fetchAchievements();
   }, []);
-
-  const renderAchievement = ({ item }:any) => (
-   <View style={styles.achievementItem}>
-     <FontAwesome5 name="medal" size={24} color={colors.PRIMARY_TEXT} />
-    <View  className="flex flex-col ">
-      <Text style={styles.achievementTitle}>{item.title}</Text>
-      <Text style={styles.achievementDescription}>{item.description}</Text>
-    </View>
-   </View>
+const editEnable = (id: string) => {
+  router.push({
+    pathname: "/new-achievements",
+    params: { id }
+  });
+}
+  const renderAchievement = ({ item }: any) => (
+    <TouchableOpacity onPress={() => editEnable(item.id)} style={styles.achievementItem} >
+      <FontAwesome5 name="medal" size={24} color={colors.PRIMARY_TEXT} />
+      <View className="flex flex-col ">
+        <Text style={styles.achievementTitle}>{item.title}</Text>
+        <Text style={styles.achievementDescription}>{item.description}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -59,8 +64,16 @@ const Achievements = () => {
           style={styles.achievementsList}
         />
       ) : (
-        <Text style={{ fontFamily: "Geist-Bold", color: colors.PRIMARY_TEXT }}
-        className="text-3xl" >Add and Celebrate Your Achievements</Text>
+        <Text
+          style={{
+            color: colors.CTA,
+            fontFamily: "Geist-Bold",
+            fontSize: 18,
+          }}
+          className="text-center mt-4"
+        >
+          Add a achievement to get started
+        </Text>
       )}
 
       <Link
@@ -91,7 +104,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     gap: 15,
-   
+
     // justifyContent: "space-between",
   },
   achievementTitle: {
@@ -105,6 +118,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   achievementsList: {
-    width: '100%',
+    width: "100%",
   },
 });

@@ -32,11 +32,11 @@ const TabLAyout = () => {
 
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: colors.PRIMARY_TEXT,
+          tabBarActiveTintColor: colors.CTA,
           headerShown: false,
-          tabBarInactiveTintColor: "#999999",
+          tabBarInactiveTintColor:  colors.PRIMARY_TEXT,
           tabBarStyle: {
-            backgroundColor: "#18181B",
+            backgroundColor: colors.PRIMARY_BG,
             borderColor: colors.LIGHT_BG,
             boxShadow: "0.5px 0.5px 0.5px 0.5px white",
           },

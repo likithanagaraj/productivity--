@@ -274,16 +274,12 @@ export const deleteAchievement = async (achievementId: string) => {
     const updatedAchievements = existingAchievements.filter(
       (achievement) => achievement.id !== achievementId
     );
-
-    await AsyncStorage.setItem(
-      ACHIEVEMENTS_STORAGE_KEY,
-      JSON.stringify(updatedAchievements)
-    );
+    await AsyncStorage.setItem('achievements', JSON.stringify(updatedAchievements));
   } catch (error) {
-    console.error("Error deleting achievement from storage:", error);
+    console.error("Error deleting achievement:", error);
+    throw error;
   }
 };
-
 
 
 

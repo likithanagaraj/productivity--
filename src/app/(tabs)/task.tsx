@@ -103,21 +103,26 @@ const Task = () => {
     >
       <View className="p-6 h-full ">
         <Text
-          style={{ fontFamily: "Geist-SemiBold", marginBottom: 20,color:colors.PRIMARY_TEXT }}
+          style={{
+            fontFamily: "Geist-SemiBold",
+            marginBottom: 20,
+            color: colors.PRIMARY_TEXT,
+          }}
           className=" text-3xl  "
         >
           Task
         </Text>
 
-        <ScrollView className="mb-5">
-          {tasks.length > 0 ? (
+        <ScrollView className="">
+         <View className="flex flex-col gap-8">
+         {tasks.length > 0 ? (
             tasks.map((task) => (
               <View
                 key={task.id}
-                style={{backgroundColor:colors.LIGHT_BG}}
-                className="p-4  rounded-lg mb-3 flex justify-between items-center flex-row gap-2"
+                style={{ backgroundColor: colors.LIGHT_BG }}
+                className="p-5  rounded-lg  flex justify-between items-start flex-row"
               >
-                <View className="flex flex-col gap-3">
+                <View className="flex flex-col gap-3 w-[78%]">
                   {task.subtasks.length === 0 && (
                     <View className="flex flex-row gap-3 items-center">
                       <Checkbox
@@ -127,11 +132,11 @@ const Task = () => {
                         onValueChange={() => handleCheckbox(task.id)}
                       />
                       <Text
-                      style={{ fontFamily: "Geist-Regular" }}
+                        style={{ fontFamily: "Geist-Regular",color:colors.PRIMARY_TEXT }}
                         className={
                           checkedStates[`${task.id}-main`]
-                            ? "text-white line-through text-lg font-bold"
-                            : "text-white text-lg font-bold"
+                            ? " line-through text-lg font-bold "
+                            : " text-lg font-bold"
                         }
                       >
                         {task.title}
@@ -141,7 +146,13 @@ const Task = () => {
 
                   {task.subtasks.length > 0 && (
                     <>
-                      <Text style={{color:colors.PRIMARY_TEXT,fontFamily:"Geist-Medium"}} className=" text-[18px] ">
+                      <Text
+                        style={{
+                          color: colors.PRIMARY_TEXT,
+                          fontFamily: "Geist-Medium",
+                        }}
+                        className=" text-[18px] "
+                      >
                         {task.title}
                       </Text>
                       {task.subtasks.map((sub: string, index: number) => {
@@ -150,25 +161,27 @@ const Task = () => {
                           <View
                             style={[containerStyle]}
                             key={index}
-                            className="flex flex-row gap-3 items-center ml-6"
+                            className="flex flex-row gap-3 items-center ml-6 "
                           >
                             <Checkbox
                               style={{ width: 18, height: 18 }}
                               value={checkedStates[checkboxKey] || false}
-                        color={colors.PRIMARY_TEXT + 95}
-
+                              color={colors.PRIMARY_TEXT + 95}
                               onValueChange={() =>
                                 handleCheckbox(task.id, index)
                               }
                             />
                             <Text
-                            style={{fontFamily:"Geist-Regular",color:colors.PRIMARY_TEXT + 95}}
+                              style={{
+                                fontFamily: "Geist-Regular",
+                                color: colors.PRIMARY_TEXT + 95,
+                              }}
                               className={
                                 checkedStates[checkboxKey]
                                   ? "text-white line-through"
                                   : "text-white"
                               }
-                            > 
+                            >
                               {sub}
                             </Text>
                           </View>
@@ -177,7 +190,7 @@ const Task = () => {
                     </>
                   )}
                 </View>
-                <View className="flex flex-row gap-5">
+                <View className="flex flex-row gap-5 ">
                   <FontAwesome
                     onPress={() =>
                       router.push({
@@ -203,29 +216,35 @@ const Task = () => {
               </View>
             ))
           ) : (
-            <Text className="text-gray-400">No tasks added yet.</Text>
+            <Text
+              style={{
+                color: colors.CTA,
+                fontFamily: "Geist-Bold",
+                fontSize: 16,
+              }}
+              className="text-center mt-4"
+            >
+              No Task Found
+            </Text>
           )}
+         </View>
         </ScrollView>
+
+
+        {/*Route: For Creating new task  */}
 
         <Link
           href={"/(screens)/newtask"}
           className="absolute bottom-8 right-8 m-2  "
         >
-          <View style={{backgroundColor:colors.PRIMARY_TEXT}} className="p-3 rounded-full">
+          <View
+            style={{ backgroundColor: colors.PRIMARY_TEXT }}
+            className="p-3 rounded-full"
+          >
             <Ionicons name="add-outline" size={28} color={colors.PRIMARY_BG} />
           </View>
         </Link>
-        {/* <Link href={"/(screens)/newtask"}>
-          <Button
-            labelStyle={{ fontFamily: "Poppins-SemiBold" }}
-            style={{ width: 200 }}
-            mode="contained-tonal"
-            textColor="white"
-            buttonColor="#D62059"
-          >
-            Create new Task
-          </Button>
-        </Link> */}
+       
       </View>
     </View>
   );

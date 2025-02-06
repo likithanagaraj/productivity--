@@ -80,7 +80,7 @@ const Pomodoro = () => {
             setState("initial");
             if (!isBreak) {
               // Add the completed session time
-              setTotalWorkTime(prev => prev + duration);
+              setTotalWorkTime((prev) => prev + duration);
               setShowBreakModal(true);
             } else {
               setIsBreak(false);
@@ -113,7 +113,7 @@ const Pomodoro = () => {
     if (!isBreak && state === "running") {
       // Calculate time spent in current session
       const timeSpent = duration - timer;
-      setTotalWorkTime(prev => prev + timeSpent);
+      setTotalWorkTime((prev) => prev + timeSpent);
     }
     setTimer(duration);
     setState("initial");
@@ -367,19 +367,20 @@ const Pomodoro = () => {
         </View>
       </Modal>
       <View className="flex flex-col items-center mt-4">
-  <Text
-    style={{ fontFamily: "Geist-Regular" }}
-    className="text-[14px] text-white opacity-70"
-  >
-    Total Focus Time
-  </Text>
-  <Text
-    style={{ fontFamily: "Geist-SemiBold" }}
-    className="text-[16px] text-white"
-  >
-    {Math.floor(totalWorkTime / 3600)}h {Math.floor((totalWorkTime % 3600) / 60)}m
-  </Text>
-</View>
+        <Text
+          style={{ fontFamily: "Geist-Regular" }}
+          className="text-[14px] text-white opacity-70"
+        >
+          Total Focus Time
+        </Text>
+        <Text
+          style={{ fontFamily: "Geist-SemiBold" }}
+          className="text-[16px] text-white"
+        >
+          {Math.floor(totalWorkTime / 3600)}h{" "}
+          {Math.floor((totalWorkTime % 3600) / 60)}m
+        </Text>
+      </View>
     </View>
   );
 };

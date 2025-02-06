@@ -1,4 +1,4 @@
-import { Platform, SafeAreaView, StyleSheet, Text, View, Dimensions } from "react-native";
+import { Platform, SafeAreaView, StyleSheet, Text, View, Dimensions, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Link, router, useFocusEffect } from "expo-router";
 import BasicCalendar from "../../componets/calendar";
@@ -16,6 +16,7 @@ import HeaderBar from "../../componets/header";
 import colors from "../../../utils/colors";
 import { getHabits, storeHabitCompletion, getHabitCompletions } from "../../../utils/storage";
 import ConfettiCannon from 'react-native-confetti-cannon';
+import { FontAwesome5 } from "@expo/vector-icons";
 
 interface Habits {
   id: string;
@@ -139,53 +140,57 @@ const habits = () => {
     const isCompleted = completions[selectedDate]?.[habit.id];
     
     const handleEdit = () => {
-      router.push(`/newhabit?id=${habit.id}`);
+      router.push({
+        pathname: "/(screens)/newhabit",
+        params: { id: habit.id }
+      });
     };
 
     return (
       <View
-        key={habit.id}
-        className="mb-4 p-4 rounded-lg flex flex-row items-center"
-        style={{
-          backgroundColor: colors.LIGHT_BG,
-          opacity: isCompleted ? 0.6 : 1,
-        }}
-      >
-        <View className="flex-1">
+      key={habit.id}
+      className="mb-4 p-4 rounded-lg flex flex-row items-center"
+      style={{
+        backgroundColor: colors.LIGHT_BG,
+        opacity: isCompleted ? 0.6 : 1,
+      }}
+    >
+      <View className="flex-1">
+        <Text
+          onPress={handleEdit}
+          style={{
+            color: colors.PRIMARY_TEXT,
+            fontFamily: "Geist-Bold",
+            fontSize: 16,
+            textDecorationLine: isCompleted ? 'line-through' : 'none',
+          }}
+        >
+          {habit.habittitle}
+        </Text>
+        {habit.description && (
           <Text
-            onPress={handleEdit}
             style={{
-              color: colors.PRIMARY_TEXT,
-              fontFamily: "Geist-Bold",
-              fontSize: 16,
+              color: colors.PRIMARY_TEXT + 80,
+              fontFamily: "Geist-Regular",
+              fontSize: 12,
               textDecorationLine: isCompleted ? 'line-through' : 'none',
             }}
+            className="text-sm mt-1"
           >
-            {habit.habittitle}
+            {habit.description}
           </Text>
-          {habit.description && (
-            <Text
-              style={{
-                color: colors.PRIMARY_TEXT + 80,
-                fontFamily: "Geist-Regular",
-                fontSize: 12,
-                textDecorationLine: isCompleted ? 'line-through' : 'none',
-              }}
-              className="text-sm mt-1"
-            >
-              {habit.description}
-            </Text>
-          )}
-        </View>
-        <View>
-          <Checkbox
-            status={isCompleted ? "checked" : "unchecked"}
-            onPress={() => toggleHabit(habit)}
-            color={colors.PRIMARY_TEXT}
-            uncheckedColor={colors.PRIMARY_TEXT}
-          />
-        </View>
+        )}
       </View>
+      <View className="flex-row gap-1">
+        <Checkbox
+          status={isCompleted ? "checked" : "unchecked"}
+          onPress={() => toggleHabit(habit)}
+          color={colors.PRIMARY_TEXT}
+          uncheckedColor={colors.PRIMARY_TEXT}
+        />
+        
+      </View>
+    </View>
     );
   };
 
@@ -200,6 +205,7 @@ const habits = () => {
             <HeaderBar title="Habits" icon1="magnify" icon2="calendar" />
             <BasicCalendar onSelectDate={handleDateSelect} selectedDates={new Date(selectedDate)} />
           </View>
+          <ScrollView>
           <View className="p-5">
             {HabitList.length > 0 ? (
               sortHabits(HabitList).map(renderHabitItem)
@@ -216,6 +222,8 @@ const habits = () => {
               </Text>
             )}
           </View>
+          </ScrollView>
+          
           <Link
             href={"/(screens)/newhabit"}
             className="absolute bottom-8 right-8 m-2"
