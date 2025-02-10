@@ -15,7 +15,7 @@ import {
 import HeaderBar from "../../componets/header";
 import colors from "../../../utils/colors";
 import { getHabits, storeHabitCompletion, getHabitCompletions } from "../../../utils/storage";
-import ConfettiCannon from 'react-native-confetti-cannon';
+// import ConfettiCannon from 'react-native-confetti-cannon';
 import { FontAwesome5 } from "@expo/vector-icons";
 
 interface Habits {
@@ -276,17 +276,7 @@ const habits = () => {
                 </View>
               </View>
             </Modal>
-            {showConfetti && (
-              <ConfettiCannon
-                count={50}
-                origin={{x: windowWidth / 2, y: windowHeight / 2}}
-                autoStart={true}
-                fadeOut={true}
-                explosionSpeed={350}
-                fallSpeed={3000}
-                colors={[colors.CTA, colors.PRIMARY_TEXT, '#FFD700', '#FF69B4']}
-              />
-            )}
+          
           </Portal>
         </View>
       </SafeAreaView>
