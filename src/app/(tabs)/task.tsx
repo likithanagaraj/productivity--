@@ -96,124 +96,92 @@ const Task = () => {
       ],
     };
   });
+
+  const [incompleteTasks, setIncompleteTasks] = useState<Tasks[]>([]);
+  const [completeTasks, setCompleteTasks] = useState<Tasks[]>([]);
+  const [showComplete, setShowComplete] = useState(false);
+
+  useEffect(() => {
+    const incomplete = tasks.filter((task) => {
+      const isChecked = checkedStates[`${task.id}-main`];
+      return !isChecked;
+    });
+    const complete = tasks.filter((task) => {
+      const isChecked = checkedStates[`${task.id}-main`];
+      return isChecked;
+    });
+    setIncompleteTasks(incomplete);
+    setCompleteTasks(complete);
+  }, [tasks, checkedStates]);
+
   return (
     <View
       style={[, { backgroundColor: colors.PRIMARY_BG }]}
-      className="h-full w-full  "
+      className="h-full p-6 w-full  "
     >
-      <View className="p-6 h-full ">
-        <Text
-          style={{
-            fontFamily: "Geist-SemiBold",
-            marginBottom: 20,
-            color: colors.PRIMARY_TEXT,
-          }}
-          className=" text-3xl  "
-        >
-          Task
-        </Text>
+      <Text
+        style={{
+          fontFamily: "Geist-SemiBold",
+          color: colors.PRIMARY_TEXT,
+        }}
+        className=" text-xl font-geist mb-10 "
+      >
+        Task
+      </Text>
 
-        <ScrollView className="">
-         <View className="flex flex-col gap-8">
-         {tasks.length > 0 ? (
-            tasks.map((task) => (
-              <View
+     <View className="flex flex-col gap-4">
+     <ScrollView className="">
+        <View className="flex flex-col gap-2">
+          {incompleteTasks.length > 0 ? (
+            incompleteTasks.map((task) => (
+              <TouchableOpacity
+                onPress={() => handleCheckbox(task.id)}
                 key={task.id}
                 style={{ backgroundColor: colors.LIGHT_BG }}
-                className="p-5  rounded-lg  flex justify-between items-start flex-row"
+                className="px-4 py-[18]  rounded-lg  flex  items-center flex-row gap-4"
               >
-                <View className="flex flex-col gap-3 w-[78%]">
-                  {task.subtasks.length === 0 && (
-                    <View className="flex flex-row gap-3 items-center">
-                      <Checkbox
-                        style={{ width: 18, height: 18 }}
-                        color={colors.PRIMARY_TEXT + 95}
-                        value={checkedStates[`${task.id}-main`] || false}
-                        onValueChange={() => handleCheckbox(task.id)}
-                      />
-                      <Text
-                        style={{ fontFamily: "Geist-Regular",color:colors.PRIMARY_TEXT }}
-                        className={
-                          checkedStates[`${task.id}-main`]
-                            ? " line-through text-lg font-bold "
-                            : " text-lg font-bold"
-                        }
-                      >
-                        {task.title}
-                      </Text>
-                    </View>
-                  )}
-
-                  {task.subtasks.length > 0 && (
-                    <>
-                      <Text
-                        style={{
-                          color: colors.PRIMARY_TEXT,
-                          fontFamily: "Geist-Medium",
-                        }}
-                        className=" text-[18px] "
-                      >
-                        {task.title}
-                      </Text>
-                      {task.subtasks.map((sub: string, index: number) => {
-                        const checkboxKey = `${task.id}-${index}`;
-                        return (
-                          <View
-                            style={[containerStyle]}
-                            key={index}
-                            className="flex flex-row gap-3 items-center ml-6 "
-                          >
-                            <Checkbox
-                              style={{ width: 18, height: 18 }}
-                              value={checkedStates[checkboxKey] || false}
-                              color={colors.PRIMARY_TEXT + 95}
-                              onValueChange={() =>
-                                handleCheckbox(task.id, index)
-                              }
-                            />
-                            <Text
-                              style={{
-                                fontFamily: "Geist-Regular",
-                                color: colors.PRIMARY_TEXT + 95,
-                              }}
-                              className={
-                                checkedStates[checkboxKey]
-                                  ? "text-white line-through"
-                                  : "text-white"
-                              }
-                            >
-                              {sub}
-                            </Text>
-                          </View>
-                        );
-                      })}
-                    </>
-                  )}
-                </View>
-                <View className="flex flex-row gap-5 ">
-                  <FontAwesome
-                    onPress={() =>
-                      router.push({
-                        pathname: "/(screens)/newtask",
-                        params: {
-                          id: task.id,
-                          task: task.title,
-                          subtasks: JSON.stringify(task.subtasks),
-                        },
-                      })
-                    }
-                    name="edit"
-                    size={18}
-                    color="white"
-                  />
-                  <FontAwesome
-                    onPress={() => handledelete(task.id)}
-                    name="trash"
-                    size={18}
-                    color="white"
-                  />
-                </View>
-              </View>
+                <Checkbox
+                  style={{ width: 14, height: 14 }}
+                  color={colors.PRIMARY_TEXT + 95}
+                  value={checkedStates[`${task.id}-main`] || false}
+                  onValueChange={() => handleCheckbox(task.id)}
+                />
+                <Text
+                  className="text-[14px]"
+                  style={{
+                    color: colors.PRIMARY_TEXT,
+                    fontFamily: "Geist-Medium",
+                    textDecorationLine: checkedStates[`${task.id}-main`]
+                      ? "line-through"
+                      : "none",
+                  }}
+                >
+                  {task.title}
+                </Text>
+                {/* <View className="flex flex-row gap-5 ">
+                    <FontAwesome
+                      onPress={() =>
+                        router.push({
+                          pathname: "/(screens)/newtask",
+                          params: {
+                            id: task.id,
+                            task: task.title,
+                            subtasks: JSON.stringify(task.subtasks),
+                          },
+                        })
+                      }
+                      name="edit"
+                      size={18}
+                      color="white"
+                    />
+                    <FontAwesome
+                      onPress={() => handledelete(task.id)}
+                      name="trash"
+                      size={18}
+                      color="white"
+                    />
+                  </View> */}
+              </TouchableOpacity>
             ))
           ) : (
             <Text
@@ -227,25 +195,106 @@ const Task = () => {
               No Task Found
             </Text>
           )}
-         </View>
-        </ScrollView>
+        </View>
+      </ScrollView>
 
-
-        {/*Route: For Creating new task  */}
-
-        <Link
-          href={"/(screens)/newtask"}
-          className="absolute bottom-8 right-8 m-2  "
+      <ScrollView className="">
+        <Button
+          onPress={() => setShowComplete(!showComplete)}
+          className="flex flex-row items-center  "
+          icon={"chevron-down"}
         >
-          <View
-            style={{ backgroundColor: colors.PRIMARY_TEXT }}
-            className="p-3 rounded-full"
-          >
-            <Ionicons name="add-outline" size={28} color={colors.PRIMARY_BG} />
+          Completed
+          {/* <Ionicons
+              name="chevron-down"
+              className="inline mt-6"
+              size={18}
+              color={colors.PRIMARY_TEXT}
+            /> */}
+        </Button>
+        {showComplete && (
+          <View className="flex-col gap-2">
+            {completeTasks.length > 0 ? (
+              completeTasks.map((task) => (
+                <TouchableOpacity
+                  onPress={() => handleCheckbox(task.id)}
+                  key={task.id}
+                  style={{ backgroundColor: colors.LIGHT_BG }}
+                  className="px-4 py-[18]  rounded-lg  flex  items-center flex-row gap-4"
+                >
+                  <Checkbox
+                    style={{ width: 14, height: 14 }}
+                    color={colors.PRIMARY_TEXT + 95}
+                    value={checkedStates[`${task.id}-main`] || false}
+                    onValueChange={() => handleCheckbox(task.id)}
+                  />
+                  <Text
+                    className="text-[14px]"
+                    style={{
+                      color: colors.PRIMARY_TEXT,
+                      fontFamily: "Geist-Medium",
+                      textDecorationLine: checkedStates[`${task.id}-main`]
+                        ? "line-through"
+                        : "none",
+                    }}
+                  >
+                    {task.title}
+                  </Text>
+                  {/* <View className="flex flex-row gap-5 ">
+                    <FontAwesome
+                      onPress={() =>
+                        router.push({
+                          pathname: "/(screens)/newtask",
+                          params: {
+                            id: task.id,
+                            task: task.title,
+                            subtasks: JSON.stringify(task.subtasks),
+                          },
+                        })
+                      }
+                      name="edit"
+                      size={18}
+                      color="white"
+                    />
+                    <FontAwesome
+                      onPress={() => handledelete(task.id)}
+                      name="trash"
+                      size={18}
+                      color="white"
+                    />
+                  </View> */}
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text
+                style={{
+                  color: colors.CTA,
+                  fontFamily: "Geist-Bold",
+                  fontSize: 16,
+                }}
+                className="text-center mt-4"
+              >
+                No complete Tasks Found
+              </Text>
+            )}
           </View>
-        </Link>
-       
-      </View>
+        )}
+      </ScrollView>
+     </View>
+
+      {/*Route: For Creating new task  */}
+
+      <Link
+        href={"/(screens)/newtask"}
+        className="absolute bottom-8 right-8 m-2  "
+      >
+        <View
+          style={{ backgroundColor: colors.PRIMARY_TEXT }}
+          className="p-3 rounded-full"
+        >
+          <Ionicons name="add-outline" size={28} color={colors.PRIMARY_BG} />
+        </View>
+      </Link>
     </View>
   );
 };

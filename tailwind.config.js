@@ -5,10 +5,11 @@ module.exports = {
 
   theme: {
     extend: {
-      
+      fontFamily: {
+        geist: ["Geist-Bold", "sans-serif"],
+      },
     },
   },
- 
-  plugins: [],
-}
 
+  plugins: [],
+};

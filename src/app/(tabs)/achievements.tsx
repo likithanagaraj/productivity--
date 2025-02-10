@@ -34,10 +34,12 @@ const editEnable = (id: string) => {
 }
   const renderAchievement = ({ item }: any) => (
     <TouchableOpacity onPress={() => editEnable(item.id)} style={styles.achievementItem} >
-      <FontAwesome5 name="medal" size={24} color={colors.PRIMARY_TEXT} />
-      <View className="flex flex-col ">
+        <Text className="text-4xl
+        ">🎖️</Text>
+      {/* <FontAwesome5 name="medal" size={24} color={colors.PRIMARY_TEXT} /> */}
+      <View className="flex flex-col -mt-2">
         <Text style={styles.achievementTitle}>{item.title}</Text>
-        <Text style={styles.achievementDescription}>{item.description}</Text>
+        {/* <Text style={styles.achievementDescription}>{item.description}</Text> */}
       </View>
     </TouchableOpacity>
   );
@@ -45,20 +47,23 @@ const editEnable = (id: string) => {
   return (
     <View
       style={{ backgroundColor: colors.PRIMARY_BG }}
-      className="h-full w-full p-8 flex flex-col items-center gap-10"
+      className="h-full w-full p-6 flex flex-col  gap-8"
     >
       <Text
         style={{ fontFamily: "Geist-Bold", color: colors.PRIMARY_TEXT }}
-        className="text-3xl"
+        className="text-[18px]"
       >
         Achievements
       </Text>
+      <View className="flex items-center justify-center">
+
       <Ionicons name="trophy" size={100} color={colors.PRIMARY_TEXT} />
+      </View>
       {achievements.length > 0 ? (
         <FlatList
           data={achievements}
           numColumns={2}
-          columnWrapperStyle={{ justifyContent: "space-between" }}
+          columnWrapperStyle={{ justifyContent:"center",gap: 16 }}
           renderItem={renderAchievement}
           keyExtractor={(item) => item.id}
           style={styles.achievementsList}
@@ -67,7 +72,7 @@ const editEnable = (id: string) => {
         <Text
           style={{
             color: colors.CTA,
-            fontFamily: "Geist-Bold",
+            fontFamily: "Geist",
             fontSize: 18,
           }}
           className="text-center mt-4"
@@ -103,14 +108,16 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: 15,
+    gap: 16,
 
     // justifyContent: "space-between",
   },
   achievementTitle: {
-    fontFamily: "Geist-SemiBold",
+    fontFamily: "Geist-Medium",
     fontSize: 16,
     color: colors.PRIMARY_TEXT,
+    textAlign: "center",
+    lineHeight: 18,
   },
   achievementDescription: {
     fontFamily: "Geist-Medium",

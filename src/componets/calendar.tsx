@@ -83,15 +83,26 @@ const HorizontalCalendar = ({ onSelectDate, selectedDates }: CalendarProps) => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContent}
       >
+         
         {dates.map((date, index) => (
-          <TouchableOpacity
+         <View>
+          
+          <View className="flex flex-col gap-1 items-center" key={index}>
+            <TouchableOpacity
             key={index}
-            style={[styles.dateContainer, isSelected(date) && styles.selectedDate, isToday(date) && styles.today]}
+            style={[styles.dateContainer, isSelected(date) && styles.selectedDate]}
             onPress={() => handleDateSelection(date)}
           >
+
             <Text  style={[styles.dayName, isSelected(date) && styles.selectedText]}>{getDayName(date)}</Text>
             <Text style={[styles.dayNumber, isSelected(date) && styles.selectedText]}>{getDayNumber(date)}</Text>
+           
           </TouchableOpacity>
+          <View className="w-5 " style={[styles.notToday,isToday(date) && styles.today]}>
+            
+          </View>
+          </View>
+         </View>
         ))}
       </ScrollView>
     </View>
@@ -102,7 +113,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.PRIMARY_BG,
     // height: 80,
-   
   },
   scrollViewContent: {
     paddingHorizontal: 4,
@@ -124,8 +134,9 @@ const styles = StyleSheet.create({
   },
   today: {
     // borderWidth: 1,
-    borderColor: "#D62059",
-    
+    // borderColor: "#D62059",
+    borderBottomColor: colors.CTA,
+    borderBottomWidth: 2,
   },
   dayName: {
     fontSize: 12,

@@ -33,7 +33,7 @@ const TabLAyout = () => {
 
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: colors.CTA,
+          tabBarActiveTintColor: colors.PRIMARY_TEXT,
           headerShown: false,
           tabBarInactiveTintColor:  "#999999",
           tabBarStyle: {
@@ -56,7 +56,7 @@ const TabLAyout = () => {
           }}
         />
         <Tabs.Screen
-          name="index"
+          name="habit"
           options={{
             title: "Habits",
             tabBarIcon: ({ color }) => (
@@ -66,7 +66,7 @@ const TabLAyout = () => {
           }}
         />
         <Tabs.Screen
-          name="home"
+          name="index"
           options={{
             title: "Home",
             tabBarIcon: ({ color }) => (

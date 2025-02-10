@@ -103,7 +103,7 @@ const NewTask = () => {
             onChangeText={(text) => settask(text)}
           />
           {errors.task && <Text className="text-red-500">{errors.task}</Text>}
-          <View>
+          {/* <View>
             <Text
               style={{ fontFamily: "Geist-Regular", }}
               className=" text-[16px] text-[#9c9c9c]"
@@ -133,16 +133,9 @@ const NewTask = () => {
                 />
               </View>
             ))}
-          </View>
+          </View> */}
 
-          <Text
-            style={{ fontFamily: "Geist-Regular" }}
-            className="text-[#666666] text-[16px] text-center "
-            onPress={addSubtask}
-          >
-            Add subtask
-            {/* <Ionicons  name="add" size={20} color="#666666" />   */}
-          </Text>
+         
 
           <Button
             onPress={handleSubmit}

@@ -144,11 +144,11 @@ const Pomodoro = () => {
   return (
     <View
       style={{ backgroundColor: colors.PRIMARY_BG }}
-      className=" h-full w-full p-7"
+      className=" h-full w-full p-6"
     >
       <Text
         style={{ fontFamily: "Geist-SemiBold" }}
-        className="text-[25px] text-white text-center"
+        className="text-[18px] text-white "
       >
         {isBreak ? "Break Time" : "Pomodoro"}
       </Text>
@@ -160,13 +160,13 @@ const Pomodoro = () => {
           className="absolute right-5 top-5"
         >
           <Button>
-            <FontAwesome5 name="edit" size={19} color="#fff" />
+            <FontAwesome5 name="edit" size={16} color="#fff" />
           </Button>
         </TouchableOpacity>
       )}
 
       <View className="flex flex-col gap-5 items-center justify-center h-[550px]">
-        <View className="flex flex-col items-center">
+        {/* <View className="flex flex-col items-center">
           <Text
             style={{ fontFamily: "Geist-Regular" }}
             className="text-[17px] text-white"
@@ -182,9 +182,9 @@ const Pomodoro = () => {
             ></TextInput>
             <FontAwesome5 name="pen" size={14} color={colors.CTA} />
           </View>
-        </View>
+        </View> */}
         <View
-          className={`w-[250px] h-[250px] border-8 flex items-center justify-center rounded-full ${
+          className={`w-[250px] h-[250px] border-4 flex items-center justify-center rounded-full ${
             isBreak ? "border-[#fff]" : "border-white"
           }`}
         >
