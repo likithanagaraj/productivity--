@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     gap: 16,
+    minHeight: 80,
 
     // justifyContent: "space-between",
   },

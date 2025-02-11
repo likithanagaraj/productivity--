@@ -10,6 +10,10 @@ import {
 import { FontAwesome5 } from "@expo/vector-icons";
 import colors from "../../../utils/colors";
 import { Button } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
+import { PomodoroStorage } from "../../../utils/storage";
+export const POMODORO_STORAGE_KEY = "POMODORO";
 
 const Pomodoro = () => {
   const [duration, setDuration] = useState(30 * 60); // Default 30 minutes
@@ -25,29 +29,27 @@ const Pomodoro = () => {
   const [editSeconds, setEditSeconds] = useState("0");
   const [totalWorkTime, setTotalWorkTime] = useState(0); // in seconds
 
-  useEffect(() => {
-    if (state === "running") {
-      const id = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer <= 1) {
-            clearInterval(id);
-            setState("initial");
-            if (!isBreak) {
-              // Work session completed, show break choice modal
-              setShowBreakModal(true);
-            } else {
-              // Break completed, reset to work session
-              setIsBreak(false);
-              setTimer(duration);
-            }
-            return 0;
-          }
-          return prevTimer - 1;
-        });
-      }, 1000);
-      return () => clearInterval(id);
-    }
-  }, [state, isBreak, duration]);
+  // useEffect(() => {
+  //   if (state === "running") {
+  //     const id = setInterval(() => {
+  //       setTimer((prevTimer) => {
+  //         if (prevTimer <= 0) {
+  //           clearInterval(id);
+  //           setState("initial");
+  //           if (!isBreak) {
+  //             setShowBreakModal(true);
+  //           } else {
+  //             setIsBreak(false);
+  //             setTimer(duration);
+  //           }
+  //           return 0;
+  //         }
+  //         return prevTimer - 1;
+  //       });
+  //     }, 1000);
+  //     return () => clearInterval(id);
+  //   }
+  // }, [state, isBreak, duration]);
 
   const handleStartBreak = () => {
     setIsBreak(true);
@@ -71,16 +73,77 @@ const Pomodoro = () => {
     return `${minutes} m`;
   };
 
+  // useEffect(() => {
+  //   if (state === "running") {
+  //     const id = setInterval(() => {
+  //       setTimer((prevTimer) => {
+  //         if (prevTimer <= 0) {
+  //           clearInterval(id);
+  //           setState("initial");
+  //           if (!isBreak) {
+  //             const newTotalTime = totalWorkTime + duration;
+  //             setTotalWorkTime(newTotalTime);
+  //             setShowBreakModal(true);
+  //           } else {
+  //             setIsBreak(false);
+  //             setTimer(duration);
+  //           }
+  //           return 0;
+  //         }
+  //         return prevTimer - 1;
+  //       });
+  //     }, 1000);
+  //     return () => clearInterval(id);
+  //   }
+  // }, [state, isBreak, duration, totalWorkTime]);
+  // useEffect(() => {
+  //   const loadSavedTime = async () => {
+  //     try {
+  //       const savedTime = await AsyncStorage.getItem(POMODORO_STORAGE_KEY);
+  //       if (savedTime !== null) {
+  //         setTotalWorkTime(JSON.parse(savedTime));
+  //       }
+  //     } catch (error) {
+  //       console.error('Error loading saved time:', error);
+  //     }
+  //   };
+  //   loadSavedTime();
+
+  // }, []);
+  // useEffect(() => {
+  //   const saveTime = async () => {
+  //     try {
+  //       await AsyncStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(totalWorkTime));
+  //     } catch (error) {
+  //       console.error('Error saving time:', error);
+  //     }
+  //   };
+  //   saveTime();
+  // }, [totalWorkTime]);
+
+  useEffect(() => {
+    const loadSavedTime = async () => {
+      const savedTime = await PomodoroStorage.loadTime();
+      setTotalWorkTime(savedTime);
+    };
+    loadSavedTime();
+  }, []);
+
+  // Save time whenever it changes
+  useEffect(() => {
+    PomodoroStorage.saveTime(totalWorkTime);
+  }, [totalWorkTime]);
+
   useEffect(() => {
     if (state === "running") {
       const id = setInterval(() => {
         setTimer((prevTimer) => {
-          if (prevTimer <= 1) {
+          if (prevTimer <= 0) {
             clearInterval(id);
             setState("initial");
             if (!isBreak) {
-              // Add the completed session time
-              setTotalWorkTime((prev) => prev + duration);
+              const newTotalTime = totalWorkTime + duration;
+              setTotalWorkTime(newTotalTime);
               setShowBreakModal(true);
             } else {
               setIsBreak(false);
@@ -93,7 +156,7 @@ const Pomodoro = () => {
       }, 1000);
       return () => clearInterval(id);
     }
-  }, [state, isBreak, duration]);
+  }, [state, isBreak, duration, totalWorkTime]);
 
   const handleMainAction = () => {
     switch (state) {
@@ -111,9 +174,9 @@ const Pomodoro = () => {
 
   const handleStop = () => {
     if (!isBreak && state === "running") {
-      // Calculate time spent in current session
       const timeSpent = duration - timer;
-      setTotalWorkTime((prev) => prev + timeSpent);
+      const newTotalTime = totalWorkTime + timeSpent;
+      setTotalWorkTime(newTotalTime);
     }
     setTimer(duration);
     setState("initial");
@@ -377,8 +440,7 @@ const Pomodoro = () => {
           style={{ fontFamily: "Geist-SemiBold" }}
           className="text-[16px] text-white"
         >
-          {Math.floor(totalWorkTime / 3600)}h{" "}
-          {Math.floor((totalWorkTime % 3600) / 60)}m
+          {formatTime(totalWorkTime)}
         </Text>
       </View>
     </View>

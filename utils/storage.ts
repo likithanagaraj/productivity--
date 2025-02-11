@@ -1,9 +1,33 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
- interface Tasks {
+export const POMODORO_STORAGE_KEY = "POMODORO";
+
+export class PomodoroStorage {
+  static async saveTime(totalTime: number): Promise<void> {
+    try {
+      await AsyncStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(totalTime));
+    } catch (error) {
+      console.error('Error saving time:', error);
+    }
+  }
+
+  static async loadTime(): Promise<number> {
+    try {
+      const savedTime = await AsyncStorage.getItem(POMODORO_STORAGE_KEY);
+      return savedTime ? JSON.parse(savedTime) : 0;
+    } catch (error) {
+      console.error('Error loading time:', error);
+      return 0;
+    }
+  }
+}
+
+
+export interface Tasks {
   id: string;
   title: string;
   subtasks: string[];
+  isCompleted?:boolean;
 }
 const TASKS_STORAGE_KEY = "tasks";
 
@@ -70,14 +94,28 @@ export const deleteTask = async (taskId: string) => {
   }
 };
 
+export const updateTaskCompletionStatus = async (taskId: string, isCompleted: boolean) => {
+  try {
+    const existingTasks = await getTasks();
+    const updatedTasks: Tasks[] = existingTasks.map((task: Tasks): Tasks => 
+      task.id === taskId ? { ...task, isCompleted } : task
+    );
+    await AsyncStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
+    return updatedTasks;
+  } catch (error) {
+    console.error("Error updating task completion status:", error);
+    throw error;
+  }
+};
 
 // Habits
 
-interface Habits{
+export interface Habits{
   id:string;
   habittitle:string;
   description?:string;
   priority?:string;
+  isCompleted?:boolean;
 }
 
 const HABITS_STORAGE_KEY = "habits";
@@ -143,6 +181,23 @@ export const deleteHabits = async (taskId: string) => {
   }
 };
 
+export const storeHabitCompletion = async (completions: { [key: string]: { [key: string]: boolean } }) => {
+  try {
+    await AsyncStorage.setItem('habitCompletions', JSON.stringify(completions));
+  } catch (error) {
+    console.error('Error storing habit completions:', error);
+  }
+};
+
+export const getHabitCompletions = async () => {
+  try {
+    const completions = await AsyncStorage.getItem('habitCompletions');
+    return completions ? JSON.parse(completions) : {};
+  } catch (error) {
+    console.error('Error getting habit completions:', error);
+    return {};
+  }
+};
 
 
 // Categories
@@ -221,7 +276,7 @@ export const deleteCategories = async (taskId: string) => {
 
 
 
-interface Achievement {
+export interface Achievement {
   id: string;
   title: string;
   description?: string;
@@ -285,20 +340,3 @@ export const deleteAchievement = async (achievementId: string) => {
 
 // Add these functions to your storage.ts file
 
-export const storeHabitCompletion = async (completions: { [key: string]: { [key: string]: boolean } }) => {
-  try {
-    await AsyncStorage.setItem('habitCompletions', JSON.stringify(completions));
-  } catch (error) {
-    console.error('Error storing habit completions:', error);
-  }
-};
-
-export const getHabitCompletions = async () => {
-  try {
-    const completions = await AsyncStorage.getItem('habitCompletions');
-    return completions ? JSON.parse(completions) : {};
-  } catch (error) {
-    console.error('Error getting habit completions:', error);
-    return {};
-  }
-};

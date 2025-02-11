@@ -3,15 +3,10 @@ import React, { useState, useEffect } from "react";
 import { Button, SegmentedButtons, TextInput, Dialog, Portal } from "react-native-paper";
 import { router, useLocalSearchParams } from "expo-router";
 import colors from "../../../utils/colors";
-import { saveHabits, getHabits, deleteHabits } from "../../../utils/storage";
+import { saveHabits, getHabits, deleteHabits, Habits } from "../../../utils/storage";
 import 'react-native-get-random-values';
 import Ionicons from "@expo/vector-icons/Ionicons";
-interface Habits {
-  id: string;
-  habittitle: string;
-  description: string;
-  priority: string;
-}
+
 
 const Newhabit = () => {
   const { id: idParam } = useLocalSearchParams();
@@ -62,7 +57,7 @@ const Newhabit = () => {
       };
       
       await saveHabits(habitData);
-      router.push("/");
+      router.push("/habit");
     } catch (error) {
       Alert.alert('Error', `Failed to ${id ? 'update' : 'save'} habit`);
     }
@@ -73,7 +68,7 @@ const Newhabit = () => {
       if (id) {
         await deleteHabits(id);
         setDeleteDialogVisible(false);
-        router.push("/");
+        router.push("/habit");
       }
     } catch (error) {
       Alert.alert('Error', 'Failed to delete habit');

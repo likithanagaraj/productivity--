@@ -13,7 +13,7 @@ import {
   useLocalSearchParams,
   useRouter,
 } from "expo-router";
-import { getTasks, deleteTask } from "../../../utils/storage";
+import { getTasks, deleteTask, Tasks, updateTaskCompletionStatus } from "../../../utils/storage";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import colors from "../../../utils/colors";
@@ -24,11 +24,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
-interface Tasks {
-  id: string;
-  title: string;
-  subtasks: string[];
-}
+
 
 const Task = () => {
   const router = useRouter();
@@ -43,6 +39,28 @@ const Task = () => {
     try {
       setRefreshing(true);
       const storedTasks = await getTasks();
+      interface CheckedStates {
+        [key: string]: boolean;
+      }
+
+      interface Task {
+        id: string;
+        title: string;
+        isCompleted: boolean;
+        subtasks?: Subtask[];
+      }
+
+      interface Subtask {
+        id: string;
+        title: string;
+        isCompleted: boolean;
+      }
+
+      const initialCheckedStates: CheckedStates = storedTasks.reduce((acc: CheckedStates, task: Task) => {
+        acc[`${task.id}-main`] = task.isCompleted || false;
+        return acc;
+      }, {});
+      setCheckedStates(initialCheckedStates);
       setTasks(storedTasks);
     } catch (error) {
       console.error("Error loading tasks:", error);
@@ -67,7 +85,7 @@ const Task = () => {
     loadTasks();
   };
 
-  const handleCheckbox = (taskId: string, subtaskIndex?: number) => {
+  const handleCheckbox =async (taskId: string, subtaskIndex?: number) => {
     const key =
       subtaskIndex !== undefined
         ? `${taskId}-${subtaskIndex}`
@@ -77,43 +95,39 @@ const Task = () => {
       ...prev,
       [key]: !prev[key],
     }));
+    try {
+      const newStatus = !checkedStates[key];
+      const updatedTasks = await updateTaskCompletionStatus(taskId, newStatus);
+      setTasks(updatedTasks);
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
   };
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-  const drag = Gesture.Pan().onChange((e) => {
-    translateX.value += e.changeX;
-    translateY.value += e.changeY;
-  });
-  const containerStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateX: translateX.value,
-        },
-        {
-          translateY: translateY.value,
-        },
-      ],
-    };
-  });
+  
+
 
   const [incompleteTasks, setIncompleteTasks] = useState<Tasks[]>([]);
   const [completeTasks, setCompleteTasks] = useState<Tasks[]>([]);
   const [showComplete, setShowComplete] = useState(false);
 
+  // useEffect(() => {
+  //   const incomplete = tasks.filter((task) => {
+  //     const isChecked = checkedStates[`${task.id}-main`];
+  //     return !isChecked;
+  //   });
+  //   const complete = tasks.filter((task) => {
+  //     const isChecked = checkedStates[`${task.id}-main`];
+  //     return isChecked;
+  //   });
+  //   setIncompleteTasks(incomplete);
+  //   setCompleteTasks(complete);
+  // }, [tasks, checkedStates]);
   useEffect(() => {
-    const incomplete = tasks.filter((task) => {
-      const isChecked = checkedStates[`${task.id}-main`];
-      return !isChecked;
-    });
-    const complete = tasks.filter((task) => {
-      const isChecked = checkedStates[`${task.id}-main`];
-      return isChecked;
-    });
+    const incomplete = tasks.filter((task) => !task.isCompleted);
+    const complete = tasks.filter((task) => task.isCompleted);
     setIncompleteTasks(incomplete);
     setCompleteTasks(complete);
-  }, [tasks, checkedStates]);
-
+  }, [tasks]);
   return (
     <View
       style={[, { backgroundColor: colors.PRIMARY_BG }]}

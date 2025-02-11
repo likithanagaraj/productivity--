@@ -26,17 +26,11 @@ import {
   getHabits,
   storeHabitCompletion,
   getHabitCompletions,
+  Habits,
 } from "../../../utils/storage";
 // import ConfettiCannon from 'react-native-confetti-cannon';
 import { FontAwesome5 } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
-
-interface Habits {
-  id: string;
-  habittitle: string;
-  description?: string;
-  priority?: string;
-}
 
 interface HabitCompletion {
   habitId: string;
@@ -91,8 +85,18 @@ const habits = () => {
       setRefreshing(true);
       const storedHabits = await getHabits();
       const storedCompletions = await getHabitCompletions();
+      interface HabitWithCheckStatus extends Habits {
+        isChecked: boolean;
+      }
+
+      const habitsWithCheckStatus: HabitWithCheckStatus[] = storedHabits.map(
+        (habit: Habits) => ({
+          ...habit,
+          isChecked: storedCompletions?.[selectedDate]?.[habit.id] || false,
+        })
+      );
       setCompletions(storedCompletions || {});
-      const sortedHabits = sortHabits(storedHabits);
+      const sortedHabits = sortHabits(habitsWithCheckStatus);
       setHabitList(sortedHabits);
     } catch (error) {
       console.error("Error loading habits:", error);
@@ -134,11 +138,11 @@ const habits = () => {
 
   const toggleHabit = async (habit: Habits) => {
     const isCurrentlyUnchecked = !completions[selectedDate]?.[habit.id];
-
+    const updatedHabit = { ...habit, isChecked: isCurrentlyUnchecked };
     if (isCurrentlyUnchecked) {
       setSelectedHabit(habit);
       setVisible(true);
-      setTimeout(() => setShowConfetti(true), 100);
+      // setTimeout(() => setShowConfetti(true), 100);
     } else {
       const newCompletions = {
         ...completions,
@@ -167,12 +171,13 @@ const habits = () => {
     hideModal();
   };
 
+  const congratsEmojis = ["🎉", "🎊", "🥳", "👏", "👍", "🙌", "👌", "🤩	", "🥇"];
   const renderHabitItem = (habit: Habits) => {
     const isCompleted = completions[selectedDate]?.[habit.id];
 
     const handleEdit = () => {
       router.push({
-        pathname: "/(screens)/newhabit",
+        pathname: "/newhabit",
         params: { id: habit.id },
       });
     };
@@ -285,21 +290,46 @@ const habits = () => {
               }}
             >
               <View className="flex flex-col gap-4 items-center justify-center">
-                <Ionicons
+                {/* <Ionicons
                   name="trophy"
                   size={64}
-                  color={colors.CTA}
-                  className="self-center"
-                />
+                  // color={colors.CTA}
+                  className="self-center bg-white"
+                /> */}
                 <Text
                   style={{
                     color: colors.PRIMARY_TEXT,
                     fontFamily: "Geist-Bold",
-                    fontSize: 18,
+                    fontSize: 42,
                   }}
                 >
-                  WELL DONE
+                  {
+                    congratsEmojis[
+                      Math.floor(Math.random() * congratsEmojis.length)
+                    ]
+                  }
                 </Text>
+                <View className="flex flex-col items-center gap-0">
+                  <Text
+                    style={{
+                      color: colors.PRIMARY_TEXT,
+                      fontFamily: "Geist-Bold",
+                      fontSize: 18,
+                    }}
+                  >
+                    WELL DONE
+                  </Text>
+                  <Text
+                    style={{
+                      color: colors.PRIMARY_TEXT,
+                      // fontFamily: "Geist-Bold",
+                      fontSize: 12,
+                      opacity: 0.8,
+                    }}
+                  >
+                    You've completed a habit
+                  </Text>
+                </View>
                 <View className="flex flex-row justify-end gap-4 mt-4">
                   <Button
                     onPress={confirmHabitCompletion}

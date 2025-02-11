@@ -83,14 +83,14 @@ const NewTask = () => {
   
   return (
     <SafeAreaView style={{backgroundColor:colors.PRIMARY_BG}} className="h-full w-full  p-5">
-      <ScrollView>
+      <ScrollView className="h-full flex flex-col ">
         <Text
           style={{ fontFamily: "Geist-SemiBold",color:colors.PRIMARY_TEXT }}
           className=" py-5 text-[22px]"
         >
           { !id ? "Create a New Task" : "Edit Task" }
         </Text>
-        <View className="flex flex-col gap-5">
+        <View className="flex flex-col justify-between h-full  ">
           <TextInput
             mode="outlined"
             selectionColor="#666666"
@@ -98,7 +98,7 @@ const NewTask = () => {
             outlineColor="#666666"
             activeOutlineColor="#fff"
             style={{backgroundColor:colors.LIGHT_BG}}
-            label="Task "
+            label="eg: 'Complete the project', 'Buy groceries'"
             value={task}
             onChangeText={(text) => settask(text)}
           />
