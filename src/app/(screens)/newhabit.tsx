@@ -54,6 +54,7 @@ const Newhabit = () => {
         habittitle: habitName.trim(),
         description: description,
         priority: value,
+        date: new Date().toISOString(),
       };
       
       await saveHabits(habitData);
@@ -106,6 +107,7 @@ const Newhabit = () => {
           <View className="flex flex-col gap-5">
             <View>
               <TextInput
+              autoFocus
                 mode="outlined"
                 style={{
                   backgroundColor: colors.LIGHT_BG,

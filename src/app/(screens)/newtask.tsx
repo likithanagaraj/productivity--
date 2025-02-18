@@ -92,6 +92,7 @@ const NewTask = () => {
         </Text>
         <View className="flex flex-col justify-between h-full  ">
           <TextInput
+          autoFocus
             mode="outlined"
             selectionColor="#666666"
             cursorColor="#666666"

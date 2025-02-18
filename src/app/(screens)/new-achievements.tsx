@@ -26,23 +26,21 @@ const NewAchievement = () => {
       }
     };
     fetchAchievement();
-  }, [id]);
+  }, []);
 
   const handleSubmitAchievement = async () => {
     if (achievementName.trim() === "") {
       setErrors("Please enter an achievement name");
       return;
     }
-
-    setErrors("");
-
+    
+    console.log("Vch")
     try {
       const newAchievement = {
         id: typeof id === "string" ? id : uuidv4(),
         title: achievementName,
         description,
       };
-
       await saveAchievements(newAchievement);
       router.push("/achievements");
     } catch (error) {
@@ -94,6 +92,7 @@ const NewAchievement = () => {
             <View className="flex flex-col gap-5">
               <View>
                 <TextInput
+                autoFocus
                   mode="outlined"
                   style={{
                     backgroundColor: colors.LIGHT_BG,

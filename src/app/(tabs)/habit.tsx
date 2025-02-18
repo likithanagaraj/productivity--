@@ -7,6 +7,7 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Link, router, useFocusEffect } from "expo-router";
@@ -173,6 +174,7 @@ const habits = () => {
 
   const congratsEmojis = ["🎉", "🎊", "🥳", "👏", "👍", "🙌", "👌", "🤩	", "🥇"];
   const renderHabitItem = (habit: Habits) => {
+  
     const isCompleted = completions[selectedDate]?.[habit.id];
 
     const handleEdit = () => {
@@ -181,14 +183,19 @@ const habits = () => {
         params: { id: habit.id },
       });
     };
-
+    const  OnPressFuntion =()=>{
+      console.log("Hi")
+      // <View>
+      //   <Text>Hi</Text>
+      // </View>
+    }
     return (
-      <TouchableOpacity
+      <Pressable
+      onLongPress={OnPressFuntion}
         key={habit.id}
         onPress={() => toggleHabit(habit)}
-        className="mb-4 px-4  rounded-lg flex flex-row items-center justify-between"
+        className="mb-4 px-4  rounded-lg flex flex-row items-center justify-between bg-LIGHT_BG"
         style={{
-          backgroundColor: colors.LIGHT_BG,
           opacity: isCompleted ? 0.6 : 1,
           paddingVertical: habit.priority ? 12 : 9,
         }}
@@ -196,6 +203,7 @@ const habits = () => {
         <View className="">
           {habit.priority && (
             <Text
+
               style={
                 habit.priority === "Medium"
                   ? styles.MediumP
@@ -209,10 +217,8 @@ const habits = () => {
           )}
           <Text
             onPress={handleEdit}
+            className="font-Geist text-PRIMARY_TEXT"
             style={{
-              color: colors.PRIMARY_TEXT,
-              fontFamily: "Geist",
-              fontSize: 14,
               textDecorationLine: isCompleted ? "line-through" : "none",
             }}
           >
@@ -223,13 +229,13 @@ const habits = () => {
           <Checkbox
             value={isCompleted}
             onValueChange={() => toggleHabit(habit)}
-            // onPress={() => toggleHabit(habit)}
+            style={{width: 15, height: 15}}
             color={colors.PRIMARY_TEXT}
-            style={{ width: 15, height: 15 }}
-            // uncheckedColor={colors.PRIMARY_TEXT}
+            // className="w-[15px] h-[15px]"
+            
           />
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   };
 
@@ -237,8 +243,8 @@ const habits = () => {
     <PaperProvider>
       <SafeAreaView>
         <View
-          style={{ backgroundColor: colors.PRIMARY_BG }}
-          className="h-full w-full flex flex-col gap-8"
+          
+          className="h-full w-full flex flex-col gap-8 bg-PRIMARY_BG"
         >
           <View>
             <HeaderBar title="Habits" icon1="magnify" icon2="calendar" />
@@ -248,7 +254,7 @@ const habits = () => {
             />
           </View>
           <ScrollView>
-            <View className="p-4">
+            <View  className="p-4">
               {HabitList.length > 0 ? (
                 sortHabits(HabitList).map(renderHabitItem)
               ) : (
@@ -258,7 +264,7 @@ const habits = () => {
                     fontFamily: "Geist-Bold",
                     fontSize: 16,
                   }}
-                  className="text-center mt-4"
+                  className="text-center mt-4 text-TextCTA"
                 >
                   No Habits Found
                 </Text>
@@ -268,12 +274,12 @@ const habits = () => {
 
           <Link
             href={"/(screens)/newhabit"}
-            className="absolute bottom-8 right-8 m-2"
+            className="absolute bottom-8 right-8 m-"
           >
             <View
-              style={{ backgroundColor: colors.PRIMARY_TEXT }}
-              className="p-3 rounded-full"
+              className="p-3 rounded-full bg-BG"
             >
+              
               <Ionicons name="add" size={28} color={colors.PRIMARY_BG} />
             </View>
           </Link>
@@ -288,6 +294,7 @@ const habits = () => {
                 margin: 20,
                 borderRadius: 8,
               }}
+              
             >
               <View className="flex flex-col gap-4 items-center justify-center">
                 {/* <Ionicons
@@ -297,11 +304,7 @@ const habits = () => {
                   className="self-center bg-white"
                 /> */}
                 <Text
-                  style={{
-                    color: colors.PRIMARY_TEXT,
-                    fontFamily: "Geist-Bold",
-                    fontSize: 42,
-                  }}
+                  className="text-PRIMARY_TEXT font-geistBold text-[42px]" 
                 >
                   {
                     congratsEmojis[
@@ -311,32 +314,26 @@ const habits = () => {
                 </Text>
                 <View className="flex flex-col items-center gap-0">
                   <Text
-                    style={{
-                      color: colors.PRIMARY_TEXT,
-                      fontFamily: "Geist-Bold",
-                      fontSize: 18,
-                    }}
+                    
+                     className="text-PRIMARY_TEXT font-geistBold text-[18px]"
                   >
                     WELL DONE
                   </Text>
                   <Text
-                    style={{
-                      color: colors.PRIMARY_TEXT,
-                      // fontFamily: "Geist-Bold",
-                      fontSize: 12,
-                      opacity: 0.8,
-                    }}
+                   
+                    className="text-PRIMARY_TEXT/70 text-xs"
                   >
                     You've completed a habit
                   </Text>
                 </View>
                 <View className="flex flex-row justify-end gap-4 mt-4">
                   <Button
+                  
                     onPress={confirmHabitCompletion}
-                    textColor={colors.PRIMARY_BG}
+                    // textColor={colors.PRIMARY_BG}
                     buttonColor={colors.CTA}
                     mode="contained"
-                    style={{ borderRadius: 5, paddingHorizontal: 20 }}
+                    className="rounded-md px-[20px]"
                   >
                     OK
                   </Button>

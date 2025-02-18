@@ -189,31 +189,17 @@ const Home = () => {
   }, []);
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: colors.PRIMARY_BG }]}
-      className="h-full w-full p-6 flex flex-col gap-8"
-    >
+    <View className="h-full p-6 flex flex-col gap-8 bg-PRIMARY_BG">
       {/* Header */}
       <View>
-        <Text
-          style={[styles.headerText, { color: colors.PRIMARY_TEXT }]}
-          className="text-4xl"
-        >
-          Hey
-        </Text>
-        <Text
-          style={[styles.headerBoldText, { color: colors.PRIMARY_TEXT }]}
-          className="text-4xl"
-        >
+        <Text className="text-4xl font-geistMedium text-PRIMARY_TEXT">Hey</Text>
+        <Text className="text-4xl font-geistBold text-PRIMARY_TEXT">
           Champion 👋
         </Text>
       </View>
 
       {/* Motivational Thought */}
-      <Text
-        style={[styles.thoughtText, { color: colors.PRIMARY_TEXT }]}
-        className="text-[20px] opacity-70"
-      >
+      <Text className="text-[20px] opacity-70 text-PRIMARY_TEXT font-geistRegular">
         "{thoughts[currentThoughtIndex]}"
       </Text>
 
@@ -221,22 +207,12 @@ const Home = () => {
       <View className="flex flex-col gap-3 w-full mt-12">
         {/* Progress Card */}
 
-        <View
-          style={[styles.card, { backgroundColor: colors.LIGHT_BG }]}
-          className="px-4 py-6 w-full rounded-lg flex flex-col gap-1"
-        >
-          .
+        <View className="px-4 py-6 w-full rounded-lg flex flex-col gap-1 bg-LIGHT_BG">
           <View className="flex flex-row gap-2 items-baseline  py-4">
-            <Text
-              className="text-5xl font-bold"
-              style={[, { color: colors.PRIMARY_TEXT }]}
-            >
+            <Text className="text-5xl font-bold text-PRIMARY_TEXT">
               {progressNumber}
             </Text>
-            <Text
-              className="text-[16px] opacity-70"
-              style={[styles.labelText, { color: colors.PRIMARY_TEXT }]}
-            >
+            <Text className="text-[16px] opacity-70 font-geistMedium text-PRIMARY_TEXT">
               <Ionicons
                 name="book"
                 className="ml-2"
@@ -252,50 +228,28 @@ const Home = () => {
         {/* Info Cards */}
         <View className="flex flex-row gap-4 w-full">
           {/* Pomodoro Card */}
-          <View
-            style={[styles.pomodoroCard, { backgroundColor: colors.LIGHT_BG }]}
-            className="w-[57%] px-4 py-2 rounded-lg flex flex-col items-start justify-center"
-          >
+          <View className="w-[57%] px-4 py-2 rounded-lg flex flex-col items-start justify-center bg-LIGHT_BG">
             <View className="flex flex-row items-center gap-2">
-              <Text style={{ color: colors.PRIMARY_TEXT }}>Pomodoro</Text>
+              <Text className="text-PRIMARY_TEXT">Pomodoro</Text>
               <Ionicons name="timer" size={24} color={colors.PRIMARY_TEXT} />
             </View>
             <View>
-              <Text
-                style={[styles.timeText, { color: colors.PRIMARY_TEXT }]}
-                className="text-2xl font-bold"
-              >
+              <Text className="text-2xl font-bold text-PRIMARY_TEXT font-geistMedium">
                 {formatPomodoroTime(Pomodoro)}
               </Text>
-              <Text style={{ color: colors.PRIMARY_TEXT }} className="text-sm">
-                worked today
-              </Text>
+              <Text className="text-sm text-PRIMARY_TEXT">worked today</Text>
             </View>
           </View>
 
           {/* Achievement Card */}
-          <View
-            style={[
-              styles.achievementCard,
-              { backgroundColor: colors.LIGHT_BG },
-            ]}
-            className="rounded-lg px-4 py-6 flex flex-col w-[38%] items-center justify-center"
-          >
+          <View className="rounded-lg px-4 py-6 flex flex-col w-[38%] items-center justify-center bg-LIGHT_BG">
             <View className="flex flex-row items-baseline gap-1">
-              <Text
-                style={[styles.achievementText, { color: colors.PRIMARY_TEXT }]}
-                className="text-6xl"
-              >
+              <Text className="text-6xl text-PRIMARY_TEXT">
                 {achievements.length}
               </Text>
               <Ionicons name="trophy" size={18} color={colors.PRIMARY_TEXT} />
             </View>
-            <Text
-              style={{ color: `${colors.PRIMARY_TEXT}80` }}
-              className="text-base"
-            >
-              Achievement
-            </Text>
+            <Text className="text-base text-PRIMARY_TEXT/60">Achievement</Text>
           </View>
         </View>
       </View>
@@ -303,44 +257,6 @@ const Home = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  headerText: {
-    fontFamily: "Geist-Medium",
-  },
-  headerBoldText: {
-    fontFamily: "Geist-Bold",
-  },
-  thoughtText: {
-    fontFamily: "Geist-Regular",
-  },
-  card: {
-    borderRadius: 12,
-    elevation: 2,
-  },
-  progressText: {
-    fontFamily: "Geist-Medium",
-  },
-  labelText: {
-    fontFamily: "Geist-Medium",
-  },
 
-  pomodoroCard: {
-    borderRadius: 12,
-    elevation: 2,
-  },
-  timeText: {
-    fontFamily: "Geist-Medium",
-  },
-  achievementCard: {
-    borderRadius: 12,
-    elevation: 2,
-  },
-  achievementText: {
-    fontFamily: "Geist-Medium",
-  },
-});
 
 export default Home;

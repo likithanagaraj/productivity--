@@ -116,6 +116,7 @@ export interface Habits{
   description?:string;
   priority?:string;
   isCompleted?:boolean;
+  date?:string;
 }
 
 const HABITS_STORAGE_KEY = "habits";

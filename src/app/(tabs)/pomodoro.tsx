@@ -206,12 +206,12 @@ const Pomodoro = () => {
 
   return (
     <View
-      style={{ backgroundColor: colors.PRIMARY_BG }}
-      className=" h-full w-full p-6"
+    
+      className=" h-full w-full p-6 bg-PRIMARY_BG"
     >
       <Text
-        style={{ fontFamily: "Geist-SemiBold" }}
-        className="text-[18px] text-white "
+        
+        className="text-[18px] text-white Geist-SemiBold"
       >
         {isBreak ? "Break Time" : "Pomodoro"}
       </Text>
@@ -229,31 +229,15 @@ const Pomodoro = () => {
       )}
 
       <View className="flex flex-col gap-5 items-center justify-center h-[550px]">
-        {/* <View className="flex flex-col items-center">
-          <Text
-            style={{ fontFamily: "Geist-Regular" }}
-            className="text-[17px] text-white"
-          >
-            {isBreak ? "taking a break from" : "working on"}
-          </Text>
-          <View className="flex flex-row items-center gap-3">
-            <TextInput
-              style={{ fontFamily: "Geist-Regular", color: colors.CTA }}
-              className="text-[18px] "
-              placeholderTextColor={colors.CTA + 90}
-              placeholder="e.g UnicornSpace UI"
-            ></TextInput>
-            <FontAwesome5 name="pen" size={14} color={colors.CTA} />
-          </View>
-        </View> */}
+        
         <View
           className={`w-[250px] h-[250px] border-4 flex items-center justify-center rounded-full ${
             isBreak ? "border-[#fff]" : "border-white"
           }`}
         >
           <Text
-            style={{ fontFamily: "Geist-SemiBold" }}
-            className="text-[55px] text-[#fff]"
+          
+            className="text-[55px] text-[#fff] font-GeistSemiBold"
           >
             {formatTime(timer)}
           </Text>
@@ -266,13 +250,13 @@ const Pomodoro = () => {
                 style={[styles.button, isBreak && styles.breakButton]}
                 onPress={() => setState("running")}
               >
-                <Text style={styles.buttonText}>Resume</Text>
+                <Text className="font-bold text-PRIMARY_BG text-lg ">Resume</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, isBreak && styles.breakButton]}
                 onPress={handleStop}
               >
-                <Text style={styles.buttonText}>Stop</Text>
+                <Text className="font-bold text-PRIMARY_BG text-lg ">Stop</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -280,7 +264,7 @@ const Pomodoro = () => {
               style={[styles.button, isBreak && styles.breakButton]}
               onPress={handleMainAction}
             >
-              <Text style={styles.buttonText}>
+              <Text  className="font-bold text-PRIMARY_BG text-lg ">
                 {state === "initial" ? "Play" : "Pause"}
               </Text>
             </TouchableOpacity>
@@ -296,16 +280,16 @@ const Pomodoro = () => {
             className=" p-5 rounded-lg w-[300px]"
           >
             <Text
-              style={{ fontFamily: "Geist-SemiBold" }}
-              className="text-center text-lg mb-4 text-white"
+           
+              className="text-center text-lg mb-4 text-white font-GeistSemiBold"
             >
               Set Timer Duration
             </Text>
             <View className="flex-row justify-between mb-4">
               <View className="flex flex-col gap-2">
                 <Text
-                  style={{ fontFamily: "Geist-Regular" }}
-                  className="text-white"
+                 
+                  className="text-white font-geistRegular"
                 >
                   Minutes
                 </Text>
@@ -314,28 +298,25 @@ const Pomodoro = () => {
                   onChangeText={setEditMinutes}
                   keyboardType="numeric"
                   style={{
-                    fontFamily: "Geist-Regular",
+                    
                     backgroundColor: colors.LIGHT_BG,
                   }}
-                  className="border-white border p-2 w-[100px] text-white rounded-md"
+                  className="border-white border p-2 w-[100px] text-white rounded-md font-geistRegular"
                 />
               </View>
               <View className="flex flex-col gap-2">
                 <Text
-                  style={{ fontFamily: "Geist-Regular" }}
-                  className="text-white"
+                 
+                  className="text-white font-geistRegular"
                 >
                   Seconds
                 </Text>
                 <TextInput
-                  style={{
-                    fontFamily: "Geist-Regular",
-                    backgroundColor: colors.LIGHT_BG,
-                  }}
+                
                   value={editSeconds}
                   onChangeText={setEditSeconds}
                   keyboardType="numeric"
-                  className="border-white border p-2 w-[100px] text-white rounded-md"
+                  className="border-white border p-2 w-[100px] text-white rounded-md font-geistRegular bg-LIGHT_BG"
                 />
               </View>
             </View>
@@ -383,14 +364,14 @@ const Pomodoro = () => {
             className=" p-5 rounded-lg w-[300px]"
           >
             <Text
-              style={{ fontFamily: "Geist-SemiBold" }}
-              className="text-center text-lg mb-4 text-white"
+              
+              className="text-center text-lg mb-4 text-white font-semibold"
             >
               Time for a Break!
             </Text>
             <Text
-              style={{ fontFamily: "Geist-Regular" }}
-              className="text-center text-white mb-4"
+              
+              className="text-center text-white mb-4 font-geistRegular"
             >
               Would you like to take a 5-minute break?
             </Text>
@@ -401,11 +382,8 @@ const Pomodoro = () => {
                 className=" p-3 rounded-[7px]"
               >
                 <Text
-                  style={{
-                    fontFamily: "Geist-SemiBold",
-                    color: colors.PRIMARY_BG,
-                  }}
-                  className=""
+                  
+                  className="font-GeistSemiBold text-PRIMARY_BG"
                 >
                   Skip Break
                 </Text>
@@ -416,11 +394,8 @@ const Pomodoro = () => {
                 className=" p-3 rounded-[7px]"
               >
                 <Text
-                  style={{
-                    fontFamily: "Geist-SemiBold",
-                    color: colors.PRIMARY_BG,
-                  }}
-                  className=""
+                  
+                  className="font-GeistSemiBold text-PRIMARY_BG"
                 >
                   Start Break
                 </Text>
@@ -431,14 +406,14 @@ const Pomodoro = () => {
       </Modal>
       <View className="flex flex-col items-center mt-4">
         <Text
-          style={{ fontFamily: "Geist-Regular" }}
-          className="text-[14px] text-white opacity-70"
+          
+          className="text-[14px] text-white opacity-70 font-geistRegular"
         >
           Total Focus Time
         </Text>
         <Text
-          style={{ fontFamily: "Geist-SemiBold" }}
-          className="text-[16px] text-white"
+         
+          className="text-[16px] text-white font-semibold"
         >
           {formatTime(totalWorkTime)}
         </Text>
