@@ -184,10 +184,7 @@ const habits = () => {
       });
     };
     const  OnPressFuntion =()=>{
-      console.log("Hi")
-      // <View>
-      //   <Text>Hi</Text>
-      // </View>
+      console.log("Long Pressed")
     }
     return (
       <Pressable
@@ -235,6 +232,7 @@ const habits = () => {
             
           />
         </View>
+        
       </Pressable>
     );
   };
@@ -271,7 +269,7 @@ const habits = () => {
               )}
             </View>
           </ScrollView>
-
+          
           <Link
             href={"/(screens)/newhabit"}
             className="absolute bottom-8 right-8 m-"
@@ -284,7 +282,7 @@ const habits = () => {
             </View>
           </Link>
 
-          <Portal>
+          <Portal >
             <Modal
               visible={visible}
               onDismiss={hideModal}
@@ -341,7 +339,9 @@ const habits = () => {
               </View>
             </Modal>
           </Portal>
+        
         </View>
+      
       </SafeAreaView>
     </PaperProvider>
   );

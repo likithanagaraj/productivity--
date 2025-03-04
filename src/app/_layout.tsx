@@ -3,11 +3,13 @@ import "../../global.css";
 import { useColorScheme, StyleSheet } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import BottomSheet, { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 export default function RootLayot() {
   return (
     <GestureHandlerRootView style={{flex:1}}>
-      <PaperProvider>
+     <BottomSheetModalProvider>
+     <PaperProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -26,14 +28,6 @@ export default function RootLayot() {
           name="(screens)/numeric-category"
           options={{ headerShown: false }}
         />
-        {/* <Stack.Screen
-          name="(screens)/checklist-category"
-          options={{ headerShown: false }}
-        /> */}
-        {/* <Stack.Screen
-          name="(screens)/habit-schedule"
-          options={{ headerShown: false }}
-        /> */}
         <Stack.Screen
           name="(screens)/task-category"
           options={{ headerShown: false }}
@@ -44,6 +38,7 @@ export default function RootLayot() {
         />
       </Stack>
     </PaperProvider>
+     </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
 }

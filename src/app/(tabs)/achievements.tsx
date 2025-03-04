@@ -1,9 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from "react-native";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Pressable,
+  GestureResponderEvent,
+} from "react-native";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import colors from "../../../utils/colors";
 import { getAchievements } from "../../../utils/storage";
+import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomDrawer from "../../componets/BottomDrawer";
+import BottomSheetAchievment from "../../componets/BottomSheet-Achievment";
 
 const Achievements = () => {
   interface Achievement {
@@ -26,16 +37,23 @@ const Achievements = () => {
   useEffect(() => {
     fetchAchievements();
   }, []);
-const editEnable = (id: string) => {
-  router.push({
-    pathname: "/new-achievements",
-    params: { id }
-  });
-}
+  const editEnable = (id: string) => {
+    router.push({
+      pathname: "/new-achievements",
+      params: { id },
+    });
+  };
   const renderAchievement = ({ item }: any) => (
-    <TouchableOpacity onPress={() => editEnable(item.id)} style={styles.achievementItem} >
-        <Text className="text-4xl
-        ">🎖️</Text>
+    <TouchableOpacity
+      onPress={() => editEnable(item.id)}
+      style={styles.achievementItem}
+    >
+      <Text
+        className="text-4xl
+        "
+      >
+        🎖️
+      </Text>
       {/* <FontAwesome5 name="medal" size={24} color={colors.PRIMARY_TEXT} /> */}
       <View className="flex flex-col -mt-2">
         <Text style={styles.achievementTitle}>{item.title}</Text>
@@ -43,6 +61,21 @@ const editEnable = (id: string) => {
       </View>
     </TouchableOpacity>
   );
+  // State that manages the visibility of the bottom drawer
+  const [isBottomDrawerVisible, setBottomDrawerVisible] = useState(false);
+  // ref
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log("handleSheetChanges", index);
+  }, []);
+  const handleClose = useCallback((event: GestureResponderEvent) => {
+    bottomSheetModalRef.current?.close();
+  }, []);
 
   return (
     <View
@@ -56,14 +89,13 @@ const editEnable = (id: string) => {
         Achievements
       </Text>
       <View className="flex items-center justify-center">
-
-      <Ionicons name="trophy" size={100} color={colors.PRIMARY_TEXT} />
+        <Ionicons name="trophy" size={100} color={colors.PRIMARY_TEXT} />
       </View>
       {achievements.length > 0 ? (
         <FlatList
           data={achievements}
           numColumns={2}
-          columnWrapperStyle={{ justifyContent:"center",gap: 16 }}
+          columnWrapperStyle={{ justifyContent: "center", gap: 16 }}
           renderItem={renderAchievement}
           keyExtractor={(item) => item.id}
           style={styles.achievementsList}
@@ -81,17 +113,45 @@ const editEnable = (id: string) => {
         </Text>
       )}
 
-      <Link
-        href={"/new-achievements"}
-        className="absolute bottom-8 right-8 m-2"
+      {/*Route: For Creating new achievment  */}
+
+      <Pressable
+        onPress={handlePresentModalPress}
+        className="absolute bottom-8 right-8 m-2  "
       >
         <View
           style={{ backgroundColor: colors.PRIMARY_TEXT }}
           className="p-3 rounded-full"
         >
-          <Ionicons name="add" size={28} color={colors.PRIMARY_BG} />
+          <Ionicons name="add-outline" size={28} color={colors.PRIMARY_BG} />
         </View>
-      </Link>
+      </Pressable>
+
+      <Pressable>
+        <BottomSheetModal
+          // index={0}
+          // snapPoints={["55%"]}
+          ref={bottomSheetModalRef}
+          onChange={handleSheetChanges}
+          handleIndicatorStyle={{ height: 0 }}
+          handleStyle={{ backgroundColor: colors.PRIMARY_BG }}
+          enableOverDrag={false}
+          enablePanDownToClose={false}
+          android_keyboardInputMode="adjustResize"
+          keyboardBehavior="interactive"
+          keyboardBlurBehavior="restore"
+          backdropComponent={() => (
+            <Pressable
+              onPress={handleClose}
+              className="absolute h-full w-[400px] bg-black/80 top-0"
+            ></Pressable>
+          )}
+        >
+          <BottomSheetView style={styles.contentContainer}>
+            <BottomSheetAchievment />
+          </BottomSheetView>
+        </BottomSheetModal>
+      </Pressable>
     </View>
   );
 };
@@ -127,5 +187,12 @@ const styles = StyleSheet.create({
   },
   achievementsList: {
     width: "100%",
+  },
+  contentContainer: {
+    // flex: 1,
+    // alignItems: "flex-start",
+    paddingHorizontal: 25,
+    backgroundColor: colors.PRIMARY_BG,
+    height: 330,
   },
 });

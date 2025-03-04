@@ -1,452 +1,293 @@
-import React, { useEffect, useState } from "react";
 import {
+  Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-  Modal,
-  TextInput,
+  GestureResponderEvent,
+  PanResponder,
 } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
+import React, { useCallback, useRef, useState } from "react";
 import colors from "../../../utils/colors";
-import { Button } from "react-native-paper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
-import { PomodoroStorage } from "../../../utils/storage";
-export const POMODORO_STORAGE_KEY = "POMODORO";
-
+import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Button, Modal, Portal, RadioButton } from "react-native-paper";
+import { hide } from "expo-splash-screen";
+import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheetAchievment from "../../componets/BottomSheet-Achievment";
+import ProjectDrawer from "../../componets/ProjectDrawer";
+import { useSharedValue, withSpring } from "react-native-reanimated";
+import { AnimatedText } from "react-native-reanimated/lib/typescript/component/Text";
 const Pomodoro = () => {
-  const [duration, setDuration] = useState(30 * 60); // Default 30 minutes
-  const [breakDuration] = useState(5 * 60); // 5 minute break
-  const [isBreak, setIsBreak] = useState(false);
-  const [state, setState] = useState<"initial" | "running" | "paused">(
-    "initial"
-  );
-  const [timer, setTimer] = useState(duration);
-  const [showModal, setShowModal] = useState(false);
-  const [showBreakModal, setShowBreakModal] = useState(false);
-  const [editMinutes, setEditMinutes] = useState("30");
-  const [editSeconds, setEditSeconds] = useState("0");
-  const [totalWorkTime, setTotalWorkTime] = useState(0); // in seconds
-
-  // useEffect(() => {
-  //   if (state === "running") {
-  //     const id = setInterval(() => {
-  //       setTimer((prevTimer) => {
-  //         if (prevTimer <= 0) {
-  //           clearInterval(id);
-  //           setState("initial");
-  //           if (!isBreak) {
-  //             setShowBreakModal(true);
-  //           } else {
-  //             setIsBreak(false);
-  //             setTimer(duration);
-  //           }
-  //           return 0;
-  //         }
-  //         return prevTimer - 1;
-  //       });
-  //     }, 1000);
-  //     return () => clearInterval(id);
-  //   }
-  // }, [state, isBreak, duration]);
-
-  const handleStartBreak = () => {
-    setIsBreak(true);
-    setTimer(breakDuration);
-    setState("initial");
-    setShowBreakModal(false);
+  const [musicVisibility, setmusicVisibility] = React.useState(false);
+  const showMusicModal = () => setmusicVisibility(true);
+  const hideMusicModal = () => setmusicVisibility(false);
+  const containerStyleMusic = { backgroundColor: "white", padding: 20 };
+  const containerStyle = {
+    backgroundColor: colors.PRIMARY_BG,
+    padding: 20,
+    margin: 30,
+    borderRadius: 5,
   };
 
-  const handleSkipBreak = () => {
-    setIsBreak(false);
-    setTimer(duration);
-    setState("initial");
-    setShowBreakModal(false);
-  };
-  const formatTotalTime = (totalSeconds: number) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    if (hours > 0) {
-      return `${hours}h  ${minutes}m`;
-    }
-    return `${minutes} m`;
-  };
+  // State that manages the visibility of the bottom drawer
+  const [isBottomDrawerVisible, setBottomDrawerVisible] = useState(false);
+  // ref
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  // useEffect(() => {
-  //   if (state === "running") {
-  //     const id = setInterval(() => {
-  //       setTimer((prevTimer) => {
-  //         if (prevTimer <= 0) {
-  //           clearInterval(id);
-  //           setState("initial");
-  //           if (!isBreak) {
-  //             const newTotalTime = totalWorkTime + duration;
-  //             setTotalWorkTime(newTotalTime);
-  //             setShowBreakModal(true);
-  //           } else {
-  //             setIsBreak(false);
-  //             setTimer(duration);
-  //           }
-  //           return 0;
-  //         }
-  //         return prevTimer - 1;
-  //       });
-  //     }, 1000);
-  //     return () => clearInterval(id);
-  //   }
-  // }, [state, isBreak, duration, totalWorkTime]);
-  // useEffect(() => {
-  //   const loadSavedTime = async () => {
-  //     try {
-  //       const savedTime = await AsyncStorage.getItem(POMODORO_STORAGE_KEY);
-  //       if (savedTime !== null) {
-  //         setTotalWorkTime(JSON.parse(savedTime));
-  //       }
-  //     } catch (error) {
-  //       console.error('Error loading saved time:', error);
-  //     }
-  //   };
-  //   loadSavedTime();
-
-  // }, []);
-  // useEffect(() => {
-  //   const saveTime = async () => {
-  //     try {
-  //       await AsyncStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(totalWorkTime));
-  //     } catch (error) {
-  //       console.error('Error saving time:', error);
-  //     }
-  //   };
-  //   saveTime();
-  // }, [totalWorkTime]);
-
-  useEffect(() => {
-    const loadSavedTime = async () => {
-      const savedTime = await PomodoroStorage.loadTime();
-      setTotalWorkTime(savedTime);
-    };
-    loadSavedTime();
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log("handleSheetChanges", index);
+  }, []);
+  const handleClose = useCallback((event: GestureResponderEvent) => {
+    bottomSheetModalRef.current?.close();
   }, []);
 
-  // Save time whenever it changes
-  useEffect(() => {
-    PomodoroStorage.saveTime(totalWorkTime);
-  }, [totalWorkTime]);
+  // Pomodoro
+  const [defaultFocusTime, setDefaultFocusTime] = useState(30 * 60);
+  const [FocusButton, setFocusButton] = useState("Pause");
+  const [isRunning, setisRunning] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const formattedTime = `${Math.floor(defaultFocusTime / 60)}:${String(
+    defaultFocusTime % 60
+  ).padStart(2, "0")}`;
 
-  useEffect(() => {
-    if (state === "running") {
-      const id = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer <= 0) {
-            clearInterval(id);
-            setState("initial");
-            if (!isBreak) {
-              const newTotalTime = totalWorkTime + duration;
-              setTotalWorkTime(newTotalTime);
-              setShowBreakModal(true);
-            } else {
-              setIsBreak(false);
-              setTimer(duration);
-            }
-            return 0;
-          }
-          return prevTimer - 1;
-        });
+  const handleFocusTime = () => {
+    // if timer is  running we need to pause it
+    if (isRunning) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      setisRunning(false);
+      setFocusButton("Play");
+    } else {
+      intervalRef.current = setInterval(() => {
+        setDefaultFocusTime((prev) => (prev > 0 ? prev - 1 : 0));
       }, 1000);
-      return () => clearInterval(id);
-    }
-  }, [state, isBreak, duration, totalWorkTime]);
-
-  const handleMainAction = () => {
-    switch (state) {
-      case "initial":
-        setState("running");
-        break;
-      case "running":
-        setState("paused");
-        break;
-      case "paused":
-        setState("running");
-        break;
+      setisRunning(true);
+      setFocusButton("Pause");
     }
   };
-
-  const handleStop = () => {
-    if (!isBreak && state === "running") {
-      const timeSpent = duration - timer;
-      const newTotalTime = totalWorkTime + timeSpent;
-      setTotalWorkTime(newTotalTime);
+  const reset = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
-    setTimer(duration);
-    setState("initial");
-    setIsBreak(false);
+    setisRunning(false);
+    setDefaultFocusTime(30 * 60);
+    setFocusButton("Start to focus");
   };
+  const lastTouchY = useRef(0);
 
-  const handleSaveDuration = () => {
-    const mins = parseInt(editMinutes);
-    const secs = parseInt(editSeconds);
-
-    // Basic validation
-    if (!isNaN(mins) && !isNaN(secs)) {
-      const newDuration = mins * 60 + secs;
-      setDuration(newDuration);
-      setTimer(newDuration);
-      setShowModal(false);
-      setState("initial");
-      setIsBreak(false);
-    }
-  };
-
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-  };
+  const panResponder = useRef (
+    PanResponder.create({
+      onStartShouldSetPanResponder:() =>true,
+      onMoveShouldSetPanResponder:()=>true,
+      onPanResponderGrant:(_,gestureState)=>{
+        lastTouchY.current =gestureState.y0
+      },
+      onPanResponderMove:(_,gestureState)=>{
+        const diff  = lastTouchY.current - gestureState.moveY
+        if(Math.abs(diff) > 30){
+          setDefaultFocusTime((prev)=>(diff > 0 ? prev +1 :prev-1))
+        
+          lastTouchY.current =gestureState.moveY
+        }
+      }
+    })
+  ).current
 
   return (
-    <View
-    
-      className=" h-full w-full p-6 bg-PRIMARY_BG"
-    >
-      <Text
-        
-        className="text-[18px] text-white Geist-SemiBold"
-      >
-        {isBreak ? "Break Time" : "Pomodoro"}
-      </Text>
-
-      {/* Edit Duration Button - hide only when timer is running */}
-      {!isBreak && state !== "running" && (
-        <TouchableOpacity
-          onPress={() => setShowModal(true)}
-          className="absolute right-5 top-5"
+    <View className=" h-full w-full p-6 bg-PRIMARY_BG flex flex-col gap-36">
+      <View className="flex flex-row justify-between items-center">
+        <Text
+          style={{ fontFamily: "Geist-Bold", color: colors.PRIMARY_TEXT }}
+          className="text-[18px]"
         >
-          <Button>
-            <FontAwesome5 name="edit" size={16} color="#fff" />
-          </Button>
-        </TouchableOpacity>
-      )}
-
-      <View className="flex flex-col gap-5 items-center justify-center h-[550px]">
-        
-        <View
-          className={`w-[250px] h-[250px] border-4 flex items-center justify-center rounded-full ${
-            isBreak ? "border-[#fff]" : "border-white"
-          }`}
-        >
-          <Text
-          
-            className="text-[55px] text-[#fff] font-GeistSemiBold"
+          Pomodoro
+        </Text>
+        <Portal>
+          <Modal
+            visible={musicVisibility}
+            onDismiss={hideMusicModal}
+            contentContainerStyle={containerStyleMusic}
           >
-            {formatTime(timer)}
-          </Text>
-        </View>
-
-        <View style={styles.container}>
-          {state === "paused" ? (
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, isBreak && styles.breakButton]}
-                onPress={() => setState("running")}
-              >
-                <Text className="font-bold text-PRIMARY_BG text-lg ">Resume</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, isBreak && styles.breakButton]}
-                onPress={handleStop}
-              >
-                <Text className="font-bold text-PRIMARY_BG text-lg ">Stop</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={[styles.button, isBreak && styles.breakButton]}
-              onPress={handleMainAction}
-            >
-              <Text  className="font-bold text-PRIMARY_BG text-lg ">
-                {state === "initial" ? "Play" : "Pause"}
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
+            <Music />
+          </Modal>
+        </Portal>
+        <FontAwesome5
+          onPress={showMusicModal}
+          name="music"
+          size={16}
+          color={colors.PRIMARY_TEXT}
+        />
+        {/* <Ionicons name="musical-notes" size={20} color={colors.PRIMARY_TEXT} /> */}
       </View>
-
-      {/* Duration Configuration Modal */}
-      <Modal visible={showModal} transparent={true} animationType="slide">
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View
-            style={{ backgroundColor: colors.PRIMARY_BG }}
-            className=" p-5 rounded-lg w-[300px]"
-          >
-            <Text
-           
-              className="text-center text-lg mb-4 text-white font-GeistSemiBold"
-            >
-              Set Timer Duration
+      {/* Pomodoro */}
+      <View className="flex flex-col items-center justify-center gap-16">
+        {/* Clock */}
+        <View className="flex flex-col items-center justify-center gap-4">
+          <View {...panResponder.panHandlers}  className="flex items-center justify-center h-[250px] w-[250px] rounded-full border-2 border-white   ">
+            <Text className="font-geistBold text-PRIMARY_TEXT text-[42px]">
+              {formattedTime}
             </Text>
-            <View className="flex-row justify-between mb-4">
-              <View className="flex flex-col gap-2">
-                <Text
-                 
-                  className="text-white font-geistRegular"
-                >
-                  Minutes
+          </View>
+          <View className="flex flex-col items-center justify-center gap-2">
+            <Button onPress={handlePresentModalPress}>
+              <View className="flex flex-row items-center gap-2">
+                <Text className="text-[14px] font-geistRegular text-TextCTA">
+                  Select a task
                 </Text>
-                <TextInput
-                  value={editMinutes}
-                  onChangeText={setEditMinutes}
-                  keyboardType="numeric"
-                  style={{
-                    
-                    backgroundColor: colors.LIGHT_BG,
-                  }}
-                  className="border-white border p-2 w-[100px] text-white rounded-md font-geistRegular"
+                <Ionicons
+                  name="chevron-down-circle-outline"
+                  size={16}
+                  color={colors.CTA}
                 />
               </View>
-              <View className="flex flex-col gap-2">
-                <Text
-                 
-                  className="text-white font-geistRegular"
-                >
-                  Seconds
-                </Text>
-                <TextInput
-                
-                  value={editSeconds}
-                  onChangeText={setEditSeconds}
-                  keyboardType="numeric"
-                  className="border-white border p-2 w-[100px] text-white rounded-md font-geistRegular bg-LIGHT_BG"
-                />
-              </View>
-            </View>
-            <View className="flex-row justify-between">
-              <TouchableOpacity
-                onPress={() => setShowModal(false)}
-                className=" p-3 rounded-[7px]"
-                style={{ backgroundColor: colors.CTA }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Geist-SemiBold",
-                    color: colors.PRIMARY_BG,
-                  }}
-                  className=""
-                >
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleSaveDuration}
-                style={{ backgroundColor: colors.CTA }}
-                className=" p-3 rounded-[7px]"
-              >
-                <Text
-                  style={{
-                    fontFamily: "Geist-SemiBold",
-                    color: colors.PRIMARY_BG,
-                  }}
-                  className=""
-                >
-                  Save
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+            </Button>
 
-      {/* Break Choice Modal */}
-      <Modal visible={showBreakModal} transparent={true} animationType="slide">
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View
-            style={{ backgroundColor: colors.LIGHT_BG }}
-            className=" p-5 rounded-lg w-[300px]"
-          >
-            <Text
-              
-              className="text-center text-lg mb-4 text-white font-semibold"
-            >
-              Time for a Break!
-            </Text>
-            <Text
-              
-              className="text-center text-white mb-4 font-geistRegular"
-            >
-              Would you like to take a 5-minute break?
-            </Text>
-            <View className="flex-row justify-between">
-              <TouchableOpacity
-                onPress={handleSkipBreak}
-                style={{ backgroundColor: colors.CTA }}
-                className=" p-3 rounded-[7px]"
+            <Pressable>
+              <BottomSheetModal
+                // index={0}
+                // snapPoints={["55%"]}
+                ref={bottomSheetModalRef}
+                onChange={handleSheetChanges}
+                handleIndicatorStyle={{ height: 0 }}
+                handleStyle={{ backgroundColor: colors.PRIMARY_BG }}
+                enableOverDrag={false}
+                enablePanDownToClose={false}
+                android_keyboardInputMode="adjustResize"
+                keyboardBehavior="interactive"
+                keyboardBlurBehavior="restore"
+                backdropComponent={() => (
+                  <Pressable
+                    onPress={handleClose}
+                    className="absolute h-full w-[400px] bg-black/80 top-0"
+                  ></Pressable>
+                )}
               >
-                <Text
-                  
-                  className="font-GeistSemiBold text-PRIMARY_BG"
+                <BottomSheetView style={styles.contentContainer}>
+                  <ProjectDrawer />
+                </BottomSheetView>
+              </BottomSheetModal>
+            </Pressable>
+            {isRunning ? (
+              <View className="flex flex-row items-center gap-4">
+                <Button
+                  onPress={reset}
+                  mode="contained"
+                  style={styles.submitButton}
                 >
-                  Skip Break
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleStartBreak}
-                style={{ backgroundColor: colors.CTA }}
-                className=" p-3 rounded-[7px]"
+                  <View className="flex flex-row items-center gap-2">
+                    <Text className="text-[14px] font-geistBold ">Reset</Text>
+                    <FontAwesome
+                      name="refresh"
+                      size={15}
+                      color={colors.LIGHT_BG}
+                    />
+                    {/* <Ionicons name="refresh" size={18} color={colors.PRIMARY_BG} /> */}
+                  </View>
+                </Button>
+                <Button
+                  onPress={handleFocusTime}
+                  mode="contained"
+                  style={styles.submitButton}
+                >
+                  <View className="flex flex-row items-center ">
+                    <Text className="text-[14px] font-geistBold ">Pause</Text>
+
+                    <Ionicons name="pause" size={16} color={colors.LIGHT_BG} />
+                  </View>
+                </Button>
+              </View>
+            ) : (
+              <Button
+                onPress={handleFocusTime}
+                mode="contained"
+                style={styles.submitButton}
               >
-                <Text
-                  
-                  className="font-GeistSemiBold text-PRIMARY_BG"
-                >
-                  Start Break
-                </Text>
-              </TouchableOpacity>
-            </View>
+                <View className="flex flex-row items-center ">
+                  <Text className="text-[14px] font-geistBold ">
+                    Start to Focus
+                  </Text>
+                  <Ionicons name="play" size={18} color={colors.LIGHT_BG} />
+                </View>
+              </Button>
+            )}
           </View>
         </View>
-      </Modal>
-      <View className="flex flex-col items-center mt-4">
-        <Text
-          
-          className="text-[14px] text-white opacity-70 font-geistRegular"
-        >
-          Total Focus Time
-        </Text>
-        <Text
-         
-          className="text-[16px] text-white font-semibold"
-        >
-          {formatTime(totalWorkTime)}
-        </Text>
+
+        {/* Focus Time */}
+        <View className="flex flex-col items-center justify-center  ">
+          <Text className="text-PRIMARY_TEXT/70 font-geistRegular  text-[14px]">
+            Total Focus Time
+          </Text>
+          <Text className="text-PRIMARY_TEXT font-semibold  text-xl">0:00</Text>
+        </View>
       </View>
     </View>
   );
 };
 
+export default Pomodoro;
+
+const Music = () => {
+  const [visible, setVisible] = React.useState(false);
+
+  const showModal = () => {
+    setVisible(true);
+  };
+  const hideModal = () => setVisible(false);
+  const containerStyle = {
+    backgroundColor: colors.PRIMARY_BG,
+    padding: 20,
+    margin: 30,
+    borderRadius: 5,
+  };
+
+  return (
+    <View>
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={containerStyle}
+        >
+          <Text className="text-PRIMARY_TEXT">
+            Exsvdnample Modal. Click outside this area to dismiss.
+          </Text>
+        </Modal>
+      </Portal>
+      <Ionicons
+        onPress={showModal}
+        name="add-circle-outline"
+        size={25}
+        color={colors.CTA}
+      />
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  button: {
+  submitButton: {
     backgroundColor: colors.CTA,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
     borderRadius: 7,
+
+    // marginBottom: 20,
   },
-  breakButton: {
-    backgroundColor: colors.CTA, // Green color for break mode
+  submitButton2: {
+    backgroundColor: colors.PRIMARY_BG,
+    borderRadius: 7,
+    borderColor: colors.PRIMARY_TEXT,
+    borderWidth: 1,
+    // marginBottom: 20,
   },
-  buttonText: {
-    color: colors.PRIMARY_BG,
-    fontFamily: "Geist-SemiBold",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    gap: 10,
+  contentContainer: {
+    // flex: 1,
+    // alignItems: "flex-start",
+    paddingHorizontal: 25,
+    paddingBottom: 25,
+    backgroundColor: colors.PRIMARY_BG,
+    // height: ,
   },
 });
-
-export default Pomodoro;
